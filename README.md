@@ -3,7 +3,8 @@
 Detection of synthetic / vocoded speech with classical ML and deep learning, benchmarked
 against the published deepfake-audio literature.
 
-> **Status: Phase 1 in progress (2026-05-04).** See
+> **Status: Phase 1 complete (2026-05-04).** Best EER: **0.00%** (LogReg / RandomForest)
+> — flagged as a dataset-shortcut artifact, not a SOTA result. See
 > [`reports/day1_phase1_report.md`](reports/day1_phase1_report.md) for the live
 > research log and [`results/`](results/) for plots and metrics.
 
@@ -68,6 +69,34 @@ cd notebooks && ../.venv/bin/jupyter nbconvert --to notebook --execute --inplace
 The HF dataset is released under its own license — see the dataset card on HuggingFace.
 Raw audio is **not** committed to this repo; the notebook downloads it on first run
 into `data/raw/hf_cache/`.
+
+## Iteration Summary
+
+### Phase 1: Domain Research, Dataset, EDA, Baseline — 2026-05-04
+
+<table>
+<tr>
+<td valign="top" width="38%">
+
+**What was tested:** 5 classical baselines (Majority, LogReg, RandomForest, XGBoost, LightGBM) on a 303-dim handcrafted feature vector (MFCC + spectral + prosody) over 1,866 clips from `garystafford/deepfake-audio-detection`. Headline metric: **EER = 0.00%** for LogReg and RandomForest.<br><br>
+**What worked best:** LogReg with StandardScaler — perfect EER, AUROC=1.0, F1=1.0 in 0.08s training. But this is a *red flag*, not a win: linear separability with a 303-dim vector means a single-feature shortcut exists.
+
+</td>
+<td align="center" width="24%">
+
+<img src="results/phase1_feature_importance.png" width="220">
+
+</td>
+<td valign="top" width="38%">
+
+**Key Insight:** ONE feature — `spec_contrast6_mean` (energy in the highest-frequency contrast band) — accounts for **66.4%** of XGBoost's gain importance. The full spectral-contrast family is **87%**. This is the fingerprint of a codec / sample-rate mismatch between real and fake sources, not learned vocoder behaviour.<br><br>
+**Surprise:** Prosody features (jitter, shimmer, F0) — the forensic signals the literature recommends — contribute **0%** to model importance, even though Cohen's d on F0 is +0.43 and on spectral flatness is −0.58. The signal is real; the model just bypasses it for the easier shortcut.<br><br>
+**Research:** Müller et al., 2022 — *"Does Audio Deepfake Detection Generalize?"* (arXiv:2203.16263) — lab-trained detectors at <1% EER routinely collapse to 30%+ EER on real-world data, so Phase 2 must move to a harder benchmark (WaveFake / ASVspoof 2019 LA).<br><br>
+**Best Model So Far:** LogisticRegression — 0.00% EER (⚠ shortcut-suspected; to be re-validated against WaveFake / ASVspoof in Phase 2).
+
+</td>
+</tr>
+</table>
 
 ## References
 
