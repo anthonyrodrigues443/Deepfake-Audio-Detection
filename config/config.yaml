@@ -1,0 +1,31 @@
+project: Deepfake-Audio-Detection
+seed: 42
+
+dataset:
+  name: Hemg/Deepfake-Audio-Dataset
+  source: huggingface
+  cache_dir: data/raw/hf_cache
+  target_sr: 16000
+  max_duration_s: 4.0
+  min_duration_s: 0.5
+
+features:
+  n_mfcc: 20
+  n_mels: 64
+  n_fft: 512
+  hop_length: 160
+  win_length: 400
+  include_deltas: true
+  include_prosody: true   # F0 jitter/shimmer
+  include_spectral: true  # spectral centroid/rolloff/flatness/contrast
+
+split:
+  strategy: stratified
+  test_size: 0.2
+  val_size: 0.1
+
+primary_metric: EER
+secondary_metrics:
+  - AUROC
+  - F1
+  - balanced_accuracy
