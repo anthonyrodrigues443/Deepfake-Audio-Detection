@@ -1,0 +1,245 @@
+{
+  "phase": 1,
+  "date": "2026-05-04",
+  "dataset": "garystafford/deepfake-audio-detection",
+  "n_total": 1866,
+  "n_train": 1119,
+  "n_val": 373,
+  "n_test": 374,
+  "feature_dim": 303,
+  "primary_metric": "EER",
+  "results": [
+    {
+      "model": "Majority",
+      "EER %": 50.0,
+      "AUROC": 0.5,
+      "F1": 0.6667,
+      "Precision": 0.5,
+      "Recall": 1.0,
+      "Bal-Acc": 0.5,
+      "Train s": 0.0
+    },
+    {
+      "model": "LogReg",
+      "EER %": 0.0,
+      "AUROC": 1.0,
+      "F1": 1.0,
+      "Precision": 1.0,
+      "Recall": 1.0,
+      "Bal-Acc": 1.0,
+      "Train s": 0.08
+    },
+    {
+      "model": "RandomForest",
+      "EER %": 0.0,
+      "AUROC": 1.0,
+      "F1": 1.0,
+      "Precision": 1.0,
+      "Recall": 1.0,
+      "Bal-Acc": 1.0,
+      "Train s": 0.36
+    },
+    {
+      "model": "XGBoost",
+      "EER %": 0.27,
+      "AUROC": 0.9999,
+      "F1": 0.9973,
+      "Precision": 1.0,
+      "Recall": 0.9947,
+      "Bal-Acc": 0.9973,
+      "Train s": 0.54
+    },
+    {
+      "model": "LightGBM",
+      "EER %": 0.8,
+      "AUROC": 0.9999,
+      "F1": 0.992,
+      "Precision": 0.9894,
+      "Recall": 0.9947,
+      "Bal-Acc": 0.992,
+      "Train s": 3.23
+    }
+  ],
+  "best_model": "LogReg",
+  "best_EER_pct": 0.0,
+  "best_AUROC": 1.0,
+  "feature_importance_top15": [
+    {
+      "feature": "spec_contrast6_mean",
+      "importance": 0.6637073159217834,
+      "family": "spec_contrast"
+    },
+    {
+      "feature": "spec_contrast6_max",
+      "importance": 0.17820386588573456,
+      "family": "spec_contrast"
+    },
+    {
+      "feature": "spec_contrast5_std",
+      "importance": 0.022853542119264603,
+      "family": "spec_contrast"
+    },
+    {
+      "feature": "mfcc_d1_0_max",
+      "importance": 0.019331805408000946,
+      "family": "mfcc"
+    },
+    {
+      "feature": "mfcc_d2_0_max",
+      "importance": 0.013522367924451828,
+      "family": "mfcc"
+    },
+    {
+      "feature": "mfcc_15_mean",
+      "importance": 0.0072616757825016975,
+      "family": "mfcc"
+    },
+    {
+      "feature": "mfcc_d1_1_min",
+      "importance": 0.0061764963902533054,
+      "family": "mfcc"
+    },
+    {
+      "feature": "spec_contrast6_std",
+      "importance": 0.004723106510937214,
+      "family": "spec_contrast"
+    },
+    {
+      "feature": "spec_rms_std",
+      "importance": 0.004516304470598698,
+      "family": "spectral"
+    },
+    {
+      "feature": "mfcc_d2_19_max",
+      "importance": 0.004078515339642763,
+      "family": "mfcc"
+    },
+    {
+      "feature": "mfcc_d1_5_std",
+      "importance": 0.003938710782676935,
+      "family": "mfcc"
+    },
+    {
+      "feature": "mfcc_d2_5_std",
+      "importance": 0.003801096463575959,
+      "family": "mfcc"
+    },
+    {
+      "feature": "mfcc_d1_15_max",
+      "importance": 0.0037768222391605377,
+      "family": "mfcc"
+    },
+    {
+      "feature": "mfcc_d1_19_max",
+      "importance": 0.0036122873425483704,
+      "family": "mfcc"
+    },
+    {
+      "feature": "mfcc_d2_13_max",
+      "importance": 0.0035794349387288094,
+      "family": "mfcc"
+    }
+  ],
+  "feature_importance_by_family": {
+    "spec_contrast": 0.8695794343948364,
+    "mfcc": 0.12038712948560715,
+    "spectral": 0.010033411905169487,
+    "prosody": 0.0
+  },
+  "forensic_effect_sizes": [
+    {
+      "feature": "spec_flatness_mean",
+      "real_mean": 0.11741504073143005,
+      "fake_mean": 0.18785381317138672,
+      "cohens_d": -0.5814952850341797,
+      "abs_d": 0.5814952850341797
+    },
+    {
+      "feature": "spec_zcr_mean",
+      "real_mean": 0.11309262365102768,
+      "fake_mean": 0.13049611449241638,
+      "cohens_d": -0.4523928165435791,
+      "abs_d": 0.4523928165435791
+    },
+    {
+      "feature": "f0_mean",
+      "real_mean": 167.8697967529297,
+      "fake_mean": 153.03758239746094,
+      "cohens_d": 0.4323005974292755,
+      "abs_d": 0.4323005974292755
+    },
+    {
+      "feature": "f0_std",
+      "real_mean": 61.14037322998047,
+      "fake_mean": 52.214439392089844,
+      "cohens_d": 0.4312168061733246,
+      "abs_d": 0.4312168061733246
+    },
+    {
+      "feature": "spec_centroid_mean",
+      "real_mean": 1358.9129638671875,
+      "fake_mean": 1488.02978515625,
+      "cohens_d": -0.37118685245513916,
+      "abs_d": 0.37118685245513916
+    },
+    {
+      "feature": "spec_rolloff_mean",
+      "real_mean": 2437.7958984375,
+      "fake_mean": 2595.549072265625,
+      "cohens_d": -0.2654125988483429,
+      "abs_d": 0.2654125988483429
+    },
+    {
+      "feature": "shimmer_local",
+      "real_mean": 0.05797325819730759,
+      "fake_mean": 0.05982152000069618,
+      "cohens_d": -0.1935667246580124,
+      "abs_d": 0.1935667246580124
+    },
+    {
+      "feature": "jitter_local",
+      "real_mean": 0.07942677289247513,
+      "fake_mean": 0.07738291472196579,
+      "cohens_d": 0.05787712335586548,
+      "abs_d": 0.05787712335586548
+    }
+  ],
+  "published_benchmarks": [
+    {
+      "system": "AFSS (2026)",
+      "dataset": "WaveFake",
+      "EER %": 1.23,
+      "kind": "deep + self-synth"
+    },
+    {
+      "system": "AFSS (2026)",
+      "dataset": "In-the-Wild",
+      "EER %": 2.7,
+      "kind": "deep + self-synth"
+    },
+    {
+      "system": "NeXt-TDNN+SSL (2025)",
+      "dataset": "ASVspoof 2021 DF",
+      "EER %": 2.8,
+      "kind": "deep + SSL"
+    },
+    {
+      "system": "ASVspoof 5 best baseline (2024)",
+      "dataset": "ASVspoof 5 DF",
+      "EER %": 7.23,
+      "kind": "deep"
+    },
+    {
+      "system": "ResNet18 + LFCC (2019)",
+      "dataset": "ASVspoof 2019 LA",
+      "EER %": 9.5,
+      "kind": "deep"
+    },
+    {
+      "system": "MFCC + ML (Khalid et al. 2022)",
+      "dataset": "FoR-2sec",
+      "EER %": 12.0,
+      "kind": "handcrafted"
+    }
+  ]
+}
