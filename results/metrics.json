@@ -241,5 +241,434 @@
       "EER %": 12.0,
       "kind": "handcrafted"
     }
-  ]
+  ],
+  "phase2": {
+    "phase": 2,
+    "date": "2026-05-05",
+    "dataset_in": "garystafford/deepfake-audio-detection",
+    "dataset_out": "Hemg/Deepfake-Audio-Dataset",
+    "primary_metric": "EER",
+    "experiments": {
+      "2.1_ablation_no_spec_contrast": [
+        {
+          "name": "LogReg",
+          "EER %": 2.674,
+          "EER_val %": 2.948,
+          "AUROC": 0.9985,
+          "F1": 0.9785,
+          "Precision": 0.9838,
+          "Recall": 0.9733,
+          "Bal-Acc": 0.9786,
+          "Train s": 0.01
+        },
+        {
+          "name": "RandomForest",
+          "EER %": 1.337,
+          "EER_val %": 2.145,
+          "AUROC": 0.9993,
+          "F1": 0.9838,
+          "Precision": 0.9945,
+          "Recall": 0.9733,
+          "Bal-Acc": 0.984,
+          "Train s": 0.52
+        },
+        {
+          "name": "XGBoost",
+          "EER %": 1.07,
+          "EER_val %": 2.95,
+          "AUROC": 0.9991,
+          "F1": 0.9892,
+          "Precision": 1.0,
+          "Recall": 0.9786,
+          "Bal-Acc": 0.9893,
+          "Train s": 1.13
+        },
+        {
+          "name": "LightGBM",
+          "EER %": 1.337,
+          "EER_val %": 2.412,
+          "AUROC": 0.9998,
+          "F1": 0.9867,
+          "Precision": 0.984,
+          "Recall": 0.9893,
+          "Bal-Acc": 0.9866,
+          "Train s": 8.87
+        }
+      ],
+      "2.2_per_family": [
+        {
+          "name": "prosody-only (11)",
+          "EER %": 22.727,
+          "EER_val %": 21.446,
+          "AUROC": 0.8529,
+          "F1": 0.7751,
+          "Precision": 0.7857,
+          "Recall": 0.7647,
+          "Bal-Acc": 0.7781,
+          "Train s": 0.89,
+          "n_features": 11
+        },
+        {
+          "name": "spectral-only (24)",
+          "EER %": 4.278,
+          "EER_val %": 5.898,
+          "AUROC": 0.9782,
+          "F1": 0.9222,
+          "Precision": 0.9595,
+          "Recall": 0.8877,
+          "Bal-Acc": 0.9251,
+          "Train s": 0.72,
+          "n_features": 24
+        },
+        {
+          "name": "mfcc-only (240)",
+          "EER %": 2.139,
+          "EER_val %": 3.485,
+          "AUROC": 0.9972,
+          "F1": 0.9757,
+          "Precision": 0.9837,
+          "Recall": 0.9679,
+          "Bal-Acc": 0.9759,
+          "Train s": 1.63,
+          "n_features": 240
+        },
+        {
+          "name": "spec_contrast-only (28)",
+          "EER %": 0.0,
+          "EER_val %": 0.0,
+          "AUROC": 1.0,
+          "F1": 0.9973,
+          "Precision": 1.0,
+          "Recall": 0.9947,
+          "Bal-Acc": 0.9973,
+          "Train s": 0.36,
+          "n_features": 28
+        },
+        {
+          "name": "no-spec_contrast (275)",
+          "EER %": 1.07,
+          "EER_val %": 2.95,
+          "AUROC": 0.9991,
+          "F1": 0.9892,
+          "Precision": 1.0,
+          "Recall": 0.9786,
+          "Bal-Acc": 0.9893,
+          "Train s": 1.39,
+          "n_features": 275
+        },
+        {
+          "name": "all (303)",
+          "EER %": 0.0,
+          "EER_val %": 0.0,
+          "AUROC": 1.0,
+          "F1": 0.9973,
+          "Precision": 1.0,
+          "Recall": 0.9947,
+          "Bal-Acc": 0.9973,
+          "Train s": 0.45,
+          "n_features": 303
+        }
+      ],
+      "2.3_tiny_mel_cnn": {
+        "name": "TinyMelCNN (end-to-end)",
+        "EER %": 2.406,
+        "EER_val %": 3.485,
+        "AUROC": 0.9919,
+        "F1": 0.9674,
+        "Precision": 0.9834,
+        "Recall": 0.9519,
+        "Bal-Acc": 0.9679,
+        "Train s": 2.9,
+        "params": 6066
+      },
+      "2.4_wav2vec2": {
+        "status": "deferred to Phase 3 \u2014 see report"
+      },
+      "2.5_cross_dataset": [
+        {
+          "name": "LogReg full (303)",
+          "EER in-domain %": 0.0,
+          "EER cross-domain %": 63.0,
+          "\u0394 EER %": 63.0,
+          "AUROC out": 0.3724
+        },
+        {
+          "name": "RandomForest full (303)",
+          "EER in-domain %": 0.0,
+          "EER cross-domain %": 60.0,
+          "\u0394 EER %": 60.0,
+          "AUROC out": 0.3842
+        },
+        {
+          "name": "XGBoost full (303)",
+          "EER in-domain %": 0.0,
+          "EER cross-domain %": 48.0,
+          "\u0394 EER %": 48.0,
+          "AUROC out": 0.5244
+        },
+        {
+          "name": "LogReg no-spec_contrast (275)",
+          "EER in-domain %": 0.0,
+          "EER cross-domain %": 56.0,
+          "\u0394 EER %": 56.0,
+          "AUROC out": 0.4336
+        },
+        {
+          "name": "XGBoost no-spec_contrast (275)",
+          "EER in-domain %": 0.0,
+          "EER cross-domain %": 64.0,
+          "\u0394 EER %": 64.0,
+          "AUROC out": 0.3104
+        }
+      ]
+    },
+    "leaderboard": [
+      {
+        "name": "LogReg",
+        "EER %": 2.674,
+        "EER_val %": 2.948,
+        "AUROC": 0.9985,
+        "F1": 0.9785,
+        "Precision": 0.9838,
+        "Recall": 0.9733,
+        "Bal-Acc": 0.9786,
+        "Train s": 0.01,
+        "experiment": "2.1 ablation no-spec_contrast"
+      },
+      {
+        "name": "RandomForest",
+        "EER %": 1.337,
+        "EER_val %": 2.145,
+        "AUROC": 0.9993,
+        "F1": 0.9838,
+        "Precision": 0.9945,
+        "Recall": 0.9733,
+        "Bal-Acc": 0.984,
+        "Train s": 0.52,
+        "experiment": "2.1 ablation no-spec_contrast"
+      },
+      {
+        "name": "XGBoost",
+        "EER %": 1.07,
+        "EER_val %": 2.95,
+        "AUROC": 0.9991,
+        "F1": 0.9892,
+        "Precision": 1.0,
+        "Recall": 0.9786,
+        "Bal-Acc": 0.9893,
+        "Train s": 1.13,
+        "experiment": "2.1 ablation no-spec_contrast"
+      },
+      {
+        "name": "LightGBM",
+        "EER %": 1.337,
+        "EER_val %": 2.412,
+        "AUROC": 0.9998,
+        "F1": 0.9867,
+        "Precision": 0.984,
+        "Recall": 0.9893,
+        "Bal-Acc": 0.9866,
+        "Train s": 8.87,
+        "experiment": "2.1 ablation no-spec_contrast"
+      },
+      {
+        "name": "prosody-only (11)",
+        "EER %": 22.727,
+        "EER_val %": 21.446,
+        "AUROC": 0.8529,
+        "F1": 0.7751,
+        "Precision": 0.7857,
+        "Recall": 0.7647,
+        "Bal-Acc": 0.7781,
+        "Train s": 0.89,
+        "n_features": 11,
+        "experiment": "2.2 per-family"
+      },
+      {
+        "name": "spectral-only (24)",
+        "EER %": 4.278,
+        "EER_val %": 5.898,
+        "AUROC": 0.9782,
+        "F1": 0.9222,
+        "Precision": 0.9595,
+        "Recall": 0.8877,
+        "Bal-Acc": 0.9251,
+        "Train s": 0.72,
+        "n_features": 24,
+        "experiment": "2.2 per-family"
+      },
+      {
+        "name": "mfcc-only (240)",
+        "EER %": 2.139,
+        "EER_val %": 3.485,
+        "AUROC": 0.9972,
+        "F1": 0.9757,
+        "Precision": 0.9837,
+        "Recall": 0.9679,
+        "Bal-Acc": 0.9759,
+        "Train s": 1.63,
+        "n_features": 240,
+        "experiment": "2.2 per-family"
+      },
+      {
+        "name": "spec_contrast-only (28)",
+        "EER %": 0.0,
+        "EER_val %": 0.0,
+        "AUROC": 1.0,
+        "F1": 0.9973,
+        "Precision": 1.0,
+        "Recall": 0.9947,
+        "Bal-Acc": 0.9973,
+        "Train s": 0.36,
+        "n_features": 28,
+        "experiment": "2.2 per-family"
+      },
+      {
+        "name": "no-spec_contrast (275)",
+        "EER %": 1.07,
+        "EER_val %": 2.95,
+        "AUROC": 0.9991,
+        "F1": 0.9892,
+        "Precision": 1.0,
+        "Recall": 0.9786,
+        "Bal-Acc": 0.9893,
+        "Train s": 1.39,
+        "n_features": 275,
+        "experiment": "2.2 per-family"
+      },
+      {
+        "name": "all (303)",
+        "EER %": 0.0,
+        "EER_val %": 0.0,
+        "AUROC": 1.0,
+        "F1": 0.9973,
+        "Precision": 1.0,
+        "Recall": 0.9947,
+        "Bal-Acc": 0.9973,
+        "Train s": 0.45,
+        "n_features": 303,
+        "experiment": "2.2 per-family"
+      },
+      {
+        "name": "TinyMelCNN (end-to-end)",
+        "EER %": 2.406,
+        "EER_val %": 3.485,
+        "AUROC": 0.9919,
+        "F1": 0.9674,
+        "Precision": 0.9834,
+        "Recall": 0.9519,
+        "Bal-Acc": 0.9679,
+        "Train s": 2.9,
+        "params": 6066,
+        "experiment": "2.3 mel-CNN"
+      },
+      {
+        "name": "Majority (P1 full 303)",
+        "EER %": 50.0,
+        "AUROC": 0.5,
+        "F1": 0.6667,
+        "Precision": 0.5,
+        "Recall": 1.0,
+        "Bal-Acc": 0.5,
+        "Train s": 0.0,
+        "experiment": "1.x phase 1 baseline"
+      },
+      {
+        "name": "LogReg (P1 full 303)",
+        "EER %": 0.0,
+        "AUROC": 1.0,
+        "F1": 1.0,
+        "Precision": 1.0,
+        "Recall": 1.0,
+        "Bal-Acc": 1.0,
+        "Train s": 0.08,
+        "experiment": "1.x phase 1 baseline"
+      },
+      {
+        "name": "RandomForest (P1 full 303)",
+        "EER %": 0.0,
+        "AUROC": 1.0,
+        "F1": 1.0,
+        "Precision": 1.0,
+        "Recall": 1.0,
+        "Bal-Acc": 1.0,
+        "Train s": 0.36,
+        "experiment": "1.x phase 1 baseline"
+      },
+      {
+        "name": "XGBoost (P1 full 303)",
+        "EER %": 0.27,
+        "AUROC": 0.9999,
+        "F1": 0.9973,
+        "Precision": 1.0,
+        "Recall": 0.9947,
+        "Bal-Acc": 0.9973,
+        "Train s": 0.54,
+        "experiment": "1.x phase 1 baseline"
+      },
+      {
+        "name": "LightGBM (P1 full 303)",
+        "EER %": 0.8,
+        "AUROC": 0.9999,
+        "F1": 0.992,
+        "Precision": 0.9894,
+        "Recall": 0.9947,
+        "Bal-Acc": 0.992,
+        "Train s": 3.23,
+        "experiment": "1.x phase 1 baseline"
+      }
+    ],
+    "phase1_baselines": [
+      {
+        "model": "Majority",
+        "EER %": 50.0,
+        "AUROC": 0.5,
+        "F1": 0.6667,
+        "Precision": 0.5,
+        "Recall": 1.0,
+        "Bal-Acc": 0.5,
+        "Train s": 0.0
+      },
+      {
+        "model": "LogReg",
+        "EER %": 0.0,
+        "AUROC": 1.0,
+        "F1": 1.0,
+        "Precision": 1.0,
+        "Recall": 1.0,
+        "Bal-Acc": 1.0,
+        "Train s": 0.08
+      },
+      {
+        "model": "RandomForest",
+        "EER %": 0.0,
+        "AUROC": 1.0,
+        "F1": 1.0,
+        "Precision": 1.0,
+        "Recall": 1.0,
+        "Bal-Acc": 1.0,
+        "Train s": 0.36
+      },
+      {
+        "model": "XGBoost",
+        "EER %": 0.27,
+        "AUROC": 0.9999,
+        "F1": 0.9973,
+        "Precision": 1.0,
+        "Recall": 0.9947,
+        "Bal-Acc": 0.9973,
+        "Train s": 0.54
+      },
+      {
+        "model": "LightGBM",
+        "EER %": 0.8,
+        "AUROC": 0.9999,
+        "F1": 0.992,
+        "Precision": 0.9894,
+        "Recall": 0.9947,
+        "Bal-Acc": 0.992,
+        "Train s": 3.23
+      }
+    ]
+  }
 }
