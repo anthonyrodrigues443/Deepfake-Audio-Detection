@@ -733,5 +733,123 @@
     "best_model": "XGBoost + combo",
     "best_stage": "3.3 combo aug",
     "success_criterion_met": false
+  },
+  "phase4": {
+    "phase": 4,
+    "date": "2026-05-07",
+    "protocol": {
+      "train_n": 500,
+      "test_n": 180,
+      "hemg_n": 100,
+      "hemg_val_n": 50,
+      "hemg_test_n": 50,
+      "seed": 42,
+      "split_seed_hemg_val_test": 123
+    },
+    "phase3_reproduction": {
+      "EER_in_%": 1.112,
+      "EER_hemg_full_%": 67.0,
+      "AUROC_hemg_full": 0.3556
+    },
+    "optuna": {
+      "n_trials": 50,
+      "sampler": "TPESampler(seed=42)",
+      "pruner": "MedianPruner(n_startup=10, warmup=20)",
+      "best_value_hemg_val_eer_%": 40.0,
+      "best_params": {
+        "max_depth": 3,
+        "n_estimators": 671,
+        "learning_rate": 0.11069143219393454,
+        "subsample": 0.8645035840204937,
+        "colsample_bytree": 0.8627622080115674,
+        "reg_alpha": 0.0019777828512462727,
+        "reg_lambda": 0.02715581955282941,
+        "min_child_weight": 2,
+        "gamma": 4.315517129377968
+      }
+    },
+    "tuned_xgb": {
+      "label": "XGBoost+combo (Optuna-tuned)",
+      "EER_in_%": 1.112,
+      "EER_hemg_full_%": 44.0,
+      "EER_hemg_val_%": 40.0,
+      "EER_hemg_test_%": 48.0,
+      "AUROC_in": 0.9997,
+      "AUROC_hemg_test": 0.4216,
+      "train_s": 0.47,
+      "best_params": {
+        "max_depth": 3,
+        "n_estimators": 671,
+        "learning_rate": 0.11069143219393454,
+        "subsample": 0.8645035840204937,
+        "colsample_bytree": 0.8627622080115674,
+        "reg_alpha": 0.0019777828512462727,
+        "reg_lambda": 0.02715581955282941,
+        "min_child_weight": 2,
+        "gamma": 4.315517129377968
+      }
+    },
+    "w2v2": {
+      "label": "W2V2 + LogReg (no aug)",
+      "EER_in_%": 1.112,
+      "EER_hemg_test_%": 34.0,
+      "AUROC_in": 0.9994,
+      "AUROC_hemg_test": 0.5856
+    },
+    "stack": [
+      {
+        "label": "Stack: simple-average (XGB + W2V2)",
+        "EER_in_%": 0.0,
+        "EER_hemg_test_%": 48.0,
+        "AUROC_hemg_test": 0.5232
+      },
+      {
+        "label": "Stack: LogReg-meta (XGB + W2V2)",
+        "EER_in_%": 0.0,
+        "EER_hemg_test_%": 48.0,
+        "AUROC_hemg_test": 0.5248
+      }
+    ],
+    "leaderboard": [
+      {
+        "label": "W2V2 + LogReg (no aug)",
+        "EER_in_%": 1.112,
+        "EER_hemg_test_%": 34.0,
+        "AUROC_hemg_test": 0.5856
+      },
+      {
+        "label": "Phase 2: XGBoost (no aug)",
+        "EER_in_%": 0.0,
+        "EER_hemg_test_%": 48.0,
+        "AUROC_hemg_test": 0.524
+      },
+      {
+        "label": "Phase 4: XGBoost + combo (Optuna-tuned)",
+        "EER_in_%": 1.112,
+        "EER_hemg_test_%": 48.0,
+        "AUROC_hemg_test": 0.4216
+      },
+      {
+        "label": "Stack: simple-average (XGB + W2V2)",
+        "EER_in_%": 0.0,
+        "EER_hemg_test_%": 48.0,
+        "AUROC_hemg_test": 0.5232
+      },
+      {
+        "label": "Stack: LogReg-meta (XGB + W2V2)",
+        "EER_in_%": 0.0,
+        "EER_hemg_test_%": 48.0,
+        "AUROC_hemg_test": 0.5248
+      },
+      {
+        "label": "Phase 3: XGBoost + combo (default params)",
+        "EER_in_%": 1.112,
+        "EER_hemg_test_%": 64.0,
+        "AUROC_hemg_test": 0.3072
+      }
+    ],
+    "best_label": "W2V2 + LogReg (no aug)",
+    "best_hemg_test_eer_%": 34.0,
+    "phase4_target_25_pct_hit": false
   }
 }
