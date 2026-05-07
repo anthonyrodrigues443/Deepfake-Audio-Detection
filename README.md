@@ -3,10 +3,11 @@
 Detection of synthetic / vocoded speech with classical ML and deep learning, benchmarked
 against the published deepfake-audio literature.
 
-> **Status: Phase 2 complete (2026-05-05).** Phase 1 handcrafted best EER: **0.00%**
+> **Status: Phase 3 complete (2026-05-06).** Phase 1 handcrafted best EER: **0.00%**
 > (LogReg / RandomForest) — flagged as a single-bin codec-shortcut artifact.
 > Phase 2 end-to-end mel-CNN: **2.41% EER** (AUROC 0.992) — squarely inside the
 > published deep-learning benchmark range and the project's first honest baseline.
+> Phase 3 best cross-domain (Hemg): **36.0% EER, 0.670 AUROC** (XGBoost + combo aug).
 > See [`reports/day2_phase2_report.md`](reports/day2_phase2_report.md) for the
 > latest research log and [`results/`](results/) for plots and metrics.
 
@@ -120,7 +121,7 @@ into `data/raw/hf_cache/`.
 **Key Insight:** The asymmetry between models *is* the diagnostic. A bag-of-statistics LogReg can index `spec_contrast6_mean` in one weight and hit 0% EER; a CNN that has to reason over the full time-frequency grid can't find a shortcut nearly as clean and lands ~10× worse — exactly the gap a codec leak should produce.<br><br>
 **Surprise:** The end-to-end CNN did **not** collapse to ~0% EER like LogReg. We expected it to trivially exploit the codec leak too. It didn't — which says the leak lives inside handcrafted spectral summary statistics, not in the raw audio content the CNN actually sees.<br><br>
 **Research:** Frank & Schönherr, 2021 — *WaveFake: A Data Set to Facilitate Audio Deepfake Detection* (arXiv:2111.02813) — handcrafted classifiers should land at 6–12% EER on properly-hard data, so anything sub-1% is the canary for shortcut learning. Phase 2 confirms the canary fired for the Phase 1 pipeline; the CNN result lands inside the published-benchmark range.<br><br>
-**Best Model So Far:** Mel-spectrogram CNN — **2.41% test EER, 0.992 AUROC**. Closer to literature than the Phase 1 LogReg (0.00%, codec-shortcut). Phase 3 will harden this with codec normalization + augmentation and target Hemg cross-EER below 25%.
+**Best Model So Far:** Mel-spectrogram CNN — **2.41% test EER, 0.992 AUROC**. Closer to literature than the Phase 1 LogReg (0.00%, codec-shortcut). Phase 3 then improved cross-domain behavior to **36.0% Hemg EER, 0.670 AUROC** with per-sample combo augmentation (XGBoost).
 
 </td>
 </tr>

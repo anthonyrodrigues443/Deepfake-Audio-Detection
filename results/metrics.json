@@ -670,5 +670,68 @@
         "Train s": 3.23
       }
     ]
+  },
+  "phase3": {
+    "leaderboard_top5": [
+      {
+        "model": "XGBoost + combo",
+        "EER_in_%": 1.111,
+        "EER_hemg_%": 36.0,
+        "AUROC_in": 0.9999,
+        "AUROC_hemg": 0.6696,
+        "train_s": 0.97,
+        "stage": "3.3 combo aug",
+        "aug": NaN,
+        "model_family": "XGBoost"
+      },
+      {
+        "model": "XGBoost (no aug)",
+        "EER_in_%": 0.0,
+        "EER_hemg_%": 40.0,
+        "AUROC_in": 1.0,
+        "AUROC_hemg": 0.6178,
+        "train_s": 0.37,
+        "stage": "3.1 baseline (no aug)",
+        "aug": NaN,
+        "model_family": NaN
+      },
+      {
+        "model": "XGBoost + gain",
+        "EER_in_%": 0.0,
+        "EER_hemg_%": 44.0,
+        "AUROC_in": 1.0,
+        "AUROC_hemg": 0.591,
+        "train_s": 0.42,
+        "stage": "3.2 single-aug: gain",
+        "aug": "gain",
+        "model_family": "XGBoost"
+      },
+      {
+        "model": "RandomForest + noise",
+        "EER_in_%": 0.556,
+        "EER_hemg_%": 46.0,
+        "AUROC_in": 0.9997,
+        "AUROC_hemg": 0.4782,
+        "train_s": 0.35,
+        "stage": "3.2 single-aug: noise",
+        "aug": "noise",
+        "model_family": "RandomForest"
+      },
+      {
+        "model": "XGBoost + shift",
+        "EER_in_%": 0.0,
+        "EER_hemg_%": 47.0,
+        "AUROC_in": 1.0,
+        "AUROC_hemg": 0.5896,
+        "train_s": 0.43,
+        "stage": "3.2 single-aug: shift",
+        "aug": "shift",
+        "model_family": "XGBoost"
+      }
+    ],
+    "best_hemg_eer_pct": 36.0,
+    "best_model": "XGBoost + combo",
+    "best_stage": "3.3 combo aug",
+    "success_criterion_met": false
   }
 }

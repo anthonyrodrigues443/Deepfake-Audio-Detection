@@ -1,0 +1,414 @@
+{
+  "phase": 3,
+  "date": "2026-05-06",
+  "dataset_in": "garystafford/deepfake-audio-detection",
+  "dataset_out": "Hemg/Deepfake-Audio-Dataset",
+  "subset": {
+    "train_n": 500,
+    "test_n": 180,
+    "hemg_n": 100,
+    "seed": 42
+  },
+  "primary_metric": "EER",
+  "success_criterion_hemg_eer_pct": 25.0,
+  "best_single_aug": "gain",
+  "experiments": {
+    "3.1_baseline_no_aug": [
+      {
+        "model": "LogReg (no aug)",
+        "EER_in_%": 1.111,
+        "EER_hemg_%": 64.0,
+        "AUROC_in": 0.9999,
+        "AUROC_hemg": 0.3576,
+        "train_s": 0.0,
+        "stage": "3.1 baseline (no aug)"
+      },
+      {
+        "model": "RandomForest (no aug)",
+        "EER_in_%": 0.0,
+        "EER_hemg_%": 49.0,
+        "AUROC_in": 1.0,
+        "AUROC_hemg": 0.4696,
+        "train_s": 0.19,
+        "stage": "3.1 baseline (no aug)"
+      },
+      {
+        "model": "XGBoost (no aug)",
+        "EER_in_%": 0.0,
+        "EER_hemg_%": 40.0,
+        "AUROC_in": 1.0,
+        "AUROC_hemg": 0.6178,
+        "train_s": 0.37,
+        "stage": "3.1 baseline (no aug)"
+      }
+    ],
+    "3.2_single_aug": [
+      {
+        "model": "LogReg + noise",
+        "EER_in_%": 4.444,
+        "EER_hemg_%": 62.0,
+        "AUROC_in": 0.9953,
+        "AUROC_hemg": 0.3628,
+        "train_s": 0.01,
+        "aug": "noise",
+        "model_family": "LogReg",
+        "stage": "3.2 single-aug: noise"
+      },
+      {
+        "model": "RandomForest + noise",
+        "EER_in_%": 0.556,
+        "EER_hemg_%": 46.0,
+        "AUROC_in": 0.9997,
+        "AUROC_hemg": 0.4782,
+        "train_s": 0.35,
+        "aug": "noise",
+        "model_family": "RandomForest",
+        "stage": "3.2 single-aug: noise"
+      },
+      {
+        "model": "XGBoost + noise",
+        "EER_in_%": 0.0,
+        "EER_hemg_%": 57.0,
+        "AUROC_in": 1.0,
+        "AUROC_hemg": 0.3916,
+        "train_s": 1.33,
+        "aug": "noise",
+        "model_family": "XGBoost",
+        "stage": "3.2 single-aug: noise"
+      },
+      {
+        "model": "LogReg + gain",
+        "EER_in_%": 0.0,
+        "EER_hemg_%": 59.0,
+        "AUROC_in": 1.0,
+        "AUROC_hemg": 0.4444,
+        "train_s": 0.0,
+        "aug": "gain",
+        "model_family": "LogReg",
+        "stage": "3.2 single-aug: gain"
+      },
+      {
+        "model": "RandomForest + gain",
+        "EER_in_%": 0.0,
+        "EER_hemg_%": 51.0,
+        "AUROC_in": 1.0,
+        "AUROC_hemg": 0.5352,
+        "train_s": 0.27,
+        "aug": "gain",
+        "model_family": "RandomForest",
+        "stage": "3.2 single-aug: gain"
+      },
+      {
+        "model": "XGBoost + gain",
+        "EER_in_%": 0.0,
+        "EER_hemg_%": 44.0,
+        "AUROC_in": 1.0,
+        "AUROC_hemg": 0.591,
+        "train_s": 0.42,
+        "aug": "gain",
+        "model_family": "XGBoost",
+        "stage": "3.2 single-aug: gain"
+      },
+      {
+        "model": "LogReg + shift",
+        "EER_in_%": 1.111,
+        "EER_hemg_%": 60.0,
+        "AUROC_in": 0.9999,
+        "AUROC_hemg": 0.3388,
+        "train_s": 0.0,
+        "aug": "shift",
+        "model_family": "LogReg",
+        "stage": "3.2 single-aug: shift"
+      },
+      {
+        "model": "RandomForest + shift",
+        "EER_in_%": 0.0,
+        "EER_hemg_%": 52.0,
+        "AUROC_in": 1.0,
+        "AUROC_hemg": 0.4782,
+        "train_s": 0.26,
+        "aug": "shift",
+        "model_family": "RandomForest",
+        "stage": "3.2 single-aug: shift"
+      },
+      {
+        "model": "XGBoost + shift",
+        "EER_in_%": 0.0,
+        "EER_hemg_%": 47.0,
+        "AUROC_in": 1.0,
+        "AUROC_hemg": 0.5896,
+        "train_s": 0.43,
+        "aug": "shift",
+        "model_family": "XGBoost",
+        "stage": "3.2 single-aug: shift"
+      },
+      {
+        "model": "LogReg + codec",
+        "EER_in_%": 2.222,
+        "EER_hemg_%": 64.0,
+        "AUROC_in": 0.9979,
+        "AUROC_hemg": 0.3464,
+        "train_s": 0.0,
+        "aug": "codec",
+        "model_family": "LogReg",
+        "stage": "3.2 single-aug: codec"
+      },
+      {
+        "model": "RandomForest + codec",
+        "EER_in_%": 2.778,
+        "EER_hemg_%": 54.0,
+        "AUROC_in": 0.9977,
+        "AUROC_hemg": 0.433,
+        "train_s": 0.28,
+        "aug": "codec",
+        "model_family": "RandomForest",
+        "stage": "3.2 single-aug: codec"
+      },
+      {
+        "model": "XGBoost + codec",
+        "EER_in_%": 0.556,
+        "EER_hemg_%": 52.0,
+        "AUROC_in": 0.9994,
+        "AUROC_hemg": 0.434,
+        "train_s": 1.0,
+        "aug": "codec",
+        "model_family": "XGBoost",
+        "stage": "3.2 single-aug: codec"
+      }
+    ],
+    "3.3_combo_aug": [
+      {
+        "model": "LogReg + combo",
+        "EER_in_%": 3.333,
+        "EER_hemg_%": 64.0,
+        "AUROC_in": 0.9981,
+        "AUROC_hemg": 0.344,
+        "train_s": 0.0,
+        "model_family": "LogReg",
+        "stage": "3.3 combo aug"
+      },
+      {
+        "model": "RandomForest + combo",
+        "EER_in_%": 0.556,
+        "EER_hemg_%": 53.0,
+        "AUROC_in": 0.9999,
+        "AUROC_hemg": 0.4592,
+        "train_s": 0.28,
+        "model_family": "RandomForest",
+        "stage": "3.3 combo aug"
+      },
+      {
+        "model": "XGBoost + combo",
+        "EER_in_%": 1.111,
+        "EER_hemg_%": 36.0,
+        "AUROC_in": 0.9999,
+        "AUROC_hemg": 0.6696,
+        "train_s": 0.97,
+        "model_family": "XGBoost",
+        "stage": "3.3 combo aug"
+      }
+    ],
+    "3.4_wav2vec2": [],
+    "3.5_wav2vec2_+_gain": []
+  },
+  "leaderboard": [
+    {
+      "model": "XGBoost + combo",
+      "EER_in_%": 1.111,
+      "EER_hemg_%": 36.0,
+      "AUROC_in": 0.9999,
+      "AUROC_hemg": 0.6696,
+      "train_s": 0.97,
+      "stage": "3.3 combo aug",
+      "aug": NaN,
+      "model_family": "XGBoost"
+    },
+    {
+      "model": "XGBoost (no aug)",
+      "EER_in_%": 0.0,
+      "EER_hemg_%": 40.0,
+      "AUROC_in": 1.0,
+      "AUROC_hemg": 0.6178,
+      "train_s": 0.37,
+      "stage": "3.1 baseline (no aug)",
+      "aug": NaN,
+      "model_family": NaN
+    },
+    {
+      "model": "XGBoost + gain",
+      "EER_in_%": 0.0,
+      "EER_hemg_%": 44.0,
+      "AUROC_in": 1.0,
+      "AUROC_hemg": 0.591,
+      "train_s": 0.42,
+      "stage": "3.2 single-aug: gain",
+      "aug": "gain",
+      "model_family": "XGBoost"
+    },
+    {
+      "model": "RandomForest + noise",
+      "EER_in_%": 0.556,
+      "EER_hemg_%": 46.0,
+      "AUROC_in": 0.9997,
+      "AUROC_hemg": 0.4782,
+      "train_s": 0.35,
+      "stage": "3.2 single-aug: noise",
+      "aug": "noise",
+      "model_family": "RandomForest"
+    },
+    {
+      "model": "XGBoost + shift",
+      "EER_in_%": 0.0,
+      "EER_hemg_%": 47.0,
+      "AUROC_in": 1.0,
+      "AUROC_hemg": 0.5896,
+      "train_s": 0.43,
+      "stage": "3.2 single-aug: shift",
+      "aug": "shift",
+      "model_family": "XGBoost"
+    },
+    {
+      "model": "RandomForest (no aug)",
+      "EER_in_%": 0.0,
+      "EER_hemg_%": 49.0,
+      "AUROC_in": 1.0,
+      "AUROC_hemg": 0.4696,
+      "train_s": 0.19,
+      "stage": "3.1 baseline (no aug)",
+      "aug": NaN,
+      "model_family": NaN
+    },
+    {
+      "model": "RandomForest + gain",
+      "EER_in_%": 0.0,
+      "EER_hemg_%": 51.0,
+      "AUROC_in": 1.0,
+      "AUROC_hemg": 0.5352,
+      "train_s": 0.27,
+      "stage": "3.2 single-aug: gain",
+      "aug": "gain",
+      "model_family": "RandomForest"
+    },
+    {
+      "model": "RandomForest + shift",
+      "EER_in_%": 0.0,
+      "EER_hemg_%": 52.0,
+      "AUROC_in": 1.0,
+      "AUROC_hemg": 0.4782,
+      "train_s": 0.26,
+      "stage": "3.2 single-aug: shift",
+      "aug": "shift",
+      "model_family": "RandomForest"
+    },
+    {
+      "model": "XGBoost + codec",
+      "EER_in_%": 0.556,
+      "EER_hemg_%": 52.0,
+      "AUROC_in": 0.9994,
+      "AUROC_hemg": 0.434,
+      "train_s": 1.0,
+      "stage": "3.2 single-aug: codec",
+      "aug": "codec",
+      "model_family": "XGBoost"
+    },
+    {
+      "model": "RandomForest + combo",
+      "EER_in_%": 0.556,
+      "EER_hemg_%": 53.0,
+      "AUROC_in": 0.9999,
+      "AUROC_hemg": 0.4592,
+      "train_s": 0.28,
+      "stage": "3.3 combo aug",
+      "aug": NaN,
+      "model_family": "RandomForest"
+    },
+    {
+      "model": "RandomForest + codec",
+      "EER_in_%": 2.778,
+      "EER_hemg_%": 54.0,
+      "AUROC_in": 0.9977,
+      "AUROC_hemg": 0.433,
+      "train_s": 0.28,
+      "stage": "3.2 single-aug: codec",
+      "aug": "codec",
+      "model_family": "RandomForest"
+    },
+    {
+      "model": "XGBoost + noise",
+      "EER_in_%": 0.0,
+      "EER_hemg_%": 57.0,
+      "AUROC_in": 1.0,
+      "AUROC_hemg": 0.3916,
+      "train_s": 1.33,
+      "stage": "3.2 single-aug: noise",
+      "aug": "noise",
+      "model_family": "XGBoost"
+    },
+    {
+      "model": "LogReg + gain",
+      "EER_in_%": 0.0,
+      "EER_hemg_%": 59.0,
+      "AUROC_in": 1.0,
+      "AUROC_hemg": 0.4444,
+      "train_s": 0.0,
+      "stage": "3.2 single-aug: gain",
+      "aug": "gain",
+      "model_family": "LogReg"
+    },
+    {
+      "model": "LogReg + shift",
+      "EER_in_%": 1.111,
+      "EER_hemg_%": 60.0,
+      "AUROC_in": 0.9999,
+      "AUROC_hemg": 0.3388,
+      "train_s": 0.0,
+      "stage": "3.2 single-aug: shift",
+      "aug": "shift",
+      "model_family": "LogReg"
+    },
+    {
+      "model": "LogReg + noise",
+      "EER_in_%": 4.444,
+      "EER_hemg_%": 62.0,
+      "AUROC_in": 0.9953,
+      "AUROC_hemg": 0.3628,
+      "train_s": 0.01,
+      "stage": "3.2 single-aug: noise",
+      "aug": "noise",
+      "model_family": "LogReg"
+    },
+    {
+      "model": "LogReg + codec",
+      "EER_in_%": 2.222,
+      "EER_hemg_%": 64.0,
+      "AUROC_in": 0.9979,
+      "AUROC_hemg": 0.3464,
+      "train_s": 0.0,
+      "stage": "3.2 single-aug: codec",
+      "aug": "codec",
+      "model_family": "LogReg"
+    },
+    {
+      "model": "LogReg + combo",
+      "EER_in_%": 3.333,
+      "EER_hemg_%": 64.0,
+      "AUROC_in": 0.9981,
+      "AUROC_hemg": 0.344,
+      "train_s": 0.0,
+      "stage": "3.3 combo aug",
+      "aug": NaN,
+      "model_family": "LogReg"
+    },
+    {
+      "model": "LogReg (no aug)",
+      "EER_in_%": 1.111,
+      "EER_hemg_%": 64.0,
+      "AUROC_in": 0.9999,
+      "AUROC_hemg": 0.3576,
+      "train_s": 0.0,
+      "stage": "3.1 baseline (no aug)",
+      "aug": NaN,
+      "model_family": NaN
+    }
+  ]
+}
