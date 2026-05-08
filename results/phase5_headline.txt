@@ -1,0 +1,14 @@
+
+PHASE 5 HEADLINE
+================
+Reference (Phase 4): W2V2+LogReg → 32.0% EER, 0.634 AUROC on 50-row Hemg test.
+
+Best advanced approach: Phase 4 champion: W2V2+LogReg (ref) → 32.0% EER  (Δ vs ref: +0.0 pp)
+Best LLM:                Codex GPT-5.5 (zero-shot, digest) → EER 44.0%  AUROC 0.530  parse-rate 100%
+Best hybrid:             0.5·W2V2 + 0.5·Haiku → EER 38.0%  AUROC 0.614
+
+Cost & latency (mean per call, 50-call sample):
+  Custom: W2V2+LogReg (frozen, 8MB)                 latency=   0.0s   cost/1k=$0.000
+  Claude Haiku (zero-shot, digest)                  latency=  14.6s   cost/1k=$0.300
+  Claude Opus (zero-shot, digest)                   latency=   5.3s   cost/1k=$4.500
+  Codex GPT-5.5 (zero-shot, digest)                 latency=   8.4s   cost/1k=$50.000
