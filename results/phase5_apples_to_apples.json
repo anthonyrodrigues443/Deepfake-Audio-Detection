@@ -1,0 +1,16 @@
+{
+  "model": "12-feature LogReg (apples-to-apples \u2014 same inputs as LLMs)",
+  "n": 50,
+  "inputs": "12 named scalars (prosody + timbre + 2 trojan-horse features)",
+  "in_EER_pct": 2.7994067482387828,
+  "in_AUROC": 0.9991348411815598,
+  "hemg_EER_pct": 84.0,
+  "hemg_AUROC": 0.0848,
+  "hemg_acc_at_0.5": 0.5,
+  "hemg_f1_at_0.5": 0.0,
+  "hemg_precision_at_0.5": 0.0,
+  "hemg_recall_at_0.5": 0.0,
+  "hemg_eer_threshold": 0.022189292342201843,
+  "cost_per_1k_USD": 0.0001,
+  "latency_s": 0.001
+}

@@ -7,6 +7,29 @@ Phase 4 left the project flat-lined: the W2V2+LogReg champion holds at **34% Hem
 
 The headline experiment is the LLM head-to-head: Claude Opus, Claude Haiku, and Codex (GPT-5.5) called via local CLI on the *same* 50 Hemg test items the custom model was scored on, with a 12-feature acoustic digest in human-readable form, and forensic priors in the prompt.
 
+## ⚠️ Input-fairness correction (added after initial commit)
+
+The first version of this report compared the W2V2+LogReg champion (which sees a **768-dim Wav2Vec2 mean-pooled embedding**) against the LLMs (which received a **12-feature human-readable digest**). Those are not the same inputs. To make the comparison fair, I trained a LogReg on the *exact same 12 features* the LLMs saw and scored it on the identical 50 Hemg test items.
+
+**Apples-to-apples result:**
+
+| Model | Inputs | Hemg EER % | Hemg AUROC | Hemg F1@0.5 | $/1k preds |
+|---|---|---:|---:|---:|---:|
+| Custom W2V2+LogReg | 768-d Wav2Vec2 embedding | 32.0 | 0.634 | 0.69 | $0.0001 |
+| Codex GPT-5.5 (zero-shot) | 12-feature digest (text) | 44.0 | 0.530 | 0.00 | $50 |
+| Claude Haiku (zero-shot) | 12-feature digest (text) | 52.0 | 0.515 | 0.52 | $0.30 |
+| Claude Opus (zero-shot) | 12-feature digest (text) | 54.0 | 0.465 | 0.32 | $4.50 |
+| **12-feature LogReg (apples-to-apples)** | **same 12 features as LLMs** | **84.0** | **0.085** | **0.00** | $0.0001 |
+
+The 12-feature specialist achieves **2.80% in-domain EER** (essentially perfect — riding the Phase 1 codec shortcut) and then **collapses to 84% EER on Hemg with AUROC 0.085** — confidently anti-predictive. The 12-feature digest IS the leakage vector identified in Phase 1 (`spec_contrast6_mean` does 66% of the in-domain importance and inverts cross-domain).
+
+**Two findings, not one:**
+
+1. **Rich neural representation > both:** the 768-d W2V2 embedding is what beats Opus by 22 EER points, not the architectural choice. A specialist starved of that representation collapses.
+2. **Frontier LLMs > same-input specialist by 30-40 EER points:** on the leaky 12-feature digest, the LLMs (Codex 44%, Haiku 52%, Opus 54%) outperform the matched LogReg (84%). They achieve this by partially ignoring spurious in-distribution correlations and falling back on forensic priors learned at pre-training (jitter/shimmer ranges, spectral flatness expectations). They lose to the W2V2 model — but they decisively beat any specialist confined to the same input they were given.
+
+This second finding is more interesting than the original "specialist beats frontier" framing and was hidden by the input-fairness gap. The post-able headline is the *combination*: rich representations beat tabular reasoning regardless of who does the reasoning, but on equal-input terms LLMs robustly beat a specialist that has memorised a domain-specific shortcut.
+
 ## Research & References
 
 1. **Müller et al., "Speaker Anti-Spoofing with Self-Supervised Features," 2024** — established that frozen self-supervised speech encoders (Wav2Vec2, HuBERT) generalise better cross-dataset than handcrafted/end-to-end models. We confirmed in Phase 4; Phase 5 tested whether their findings on calibration (none reliably helps cross-domain) extend here. They do.
@@ -180,6 +203,7 @@ The plot at `results/phase5_threshold_geometry.png` shows FAR/FRR/HTER versus th
 
 ## Frontier Model Comparison Notes (limitations)
 
+* **Input asymmetry (the big one).** The W2V2 model uses a 768-d neural embedding; the LLMs use 12 named scalars. The "32% vs 54%" headline conflates representation with reasoner. The apples-to-apples row above (12-feature LogReg → 84% EER) is the input-matched baseline; it shows the LLMs *outperform* a specialist on the same input by 30-40 EER points.
 * Latency is CLI-inflated. Real per-API-call latency would be 5-10× faster. Cost numbers are real.
 * Sample size n=50 is the same as Phase 4's hemg_test for apples-to-apples — within-sample comparisons are valid; absolute numbers carry ±~7% margin (binomial CI on 50 trials).
 * The LLMs were given a 12-feature digest, not the raw audio or the full 303-d HC vector. A larger digest or chain-of-thought prompting might lift the LLM numbers; not tested today (out of phase scope).
