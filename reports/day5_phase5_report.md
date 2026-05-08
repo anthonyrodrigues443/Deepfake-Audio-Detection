@@ -1,34 +1,46 @@
-# Phase 5 — Advanced Techniques + Ablation + LLM Head-to-Head — Deepfake Audio Detection
+# Phase 5 — Advanced Techniques + Ablation — Deepfake Audio Detection
 **Date:** 2026-05-08 · **Session:** 5 of 7 · **Project:** DL-2 Deepfake Audio Detection (`anthonyrodrigues443/Deepfake-Audio-Detection`)
 
 ## Objective
 
-Phase 4 left the project flat-lined: the W2V2+LogReg champion holds at **34% Hemg test EER** (32% on the reconstructed split used in this notebook), Optuna delivered exactly zero gain over 50 trials, and stacking made things worse. Phase 5 asks: is there *any* advanced trick — late fusion, dimensionality reduction, calibration, or a frontier LLM with the same acoustic features — that moves the cross-distribution number, or are we at the ceiling for this dataset/architecture combo?
+Phase 4 left the project flat-lined: the W2V2+LogReg champion holds at **34% Hemg test EER** (32% on the reconstructed split used in this notebook), Optuna delivered exactly zero gain over 50 trials, and stacking made things worse. Phase 5 asks: is there *any* advanced trick — late fusion, dimensionality reduction, calibration — that moves the cross-distribution number, or are we at the ceiling for this dataset/architecture combo?
 
-The headline experiment is the LLM head-to-head: Claude Opus, Claude Haiku, and Codex (GPT-5.5) called via local CLI on the *same* 50 Hemg test items the custom model was scored on, with a 12-feature acoustic digest in human-readable form, and forensic priors in the prompt.
+A subsidiary side-test (LLM zero-shot reasoning on a 12-feature acoustic digest) was run but is **not the headline of this Phase**. See "LLM side-test — explicit non-benchmark" below for what it does and does not show.
 
-## ⚠️ Input-fairness correction (added after initial commit)
+## ⚠️ LLM side-test — explicit non-benchmark
 
-The first version of this report compared the W2V2+LogReg champion (which sees a **768-dim Wav2Vec2 mean-pooled embedding**) against the LLMs (which received a **12-feature human-readable digest**). Those are not the same inputs. To make the comparison fair, I trained a LogReg on the *exact same 12 features* the LLMs saw and scored it on the identical 50 Hemg test items.
+> **This is NOT a benchmark of frontier LLM capabilities at deepfake audio detection.** It is a narrow exploratory test of LLM zero-shot reasoning over a deliberately constrained 12-scalar text digest.
 
-**Apples-to-apples result:**
+**Why this is not a fair LLM benchmark:**
 
-| Model | Inputs | Hemg EER % | Hemg AUROC | Hemg F1@0.5 | $/1k preds |
+* The W2V2 model takes **raw 16 kHz audio** and processes it through a frozen Wav2Vec2-base encoder into a 768-dim embedding before LogReg. That's the model's actual input pipeline.
+* The LLMs in this test (Claude Opus, Claude Haiku, Codex GPT-5.5) were given **12 named scalars in text form**. They were not given audio.
+* The local CLIs we use (`claude --print`, `codex exec`) **do not support audio input**, only text and images. A truly fair head-to-head would feed the same raw waveform to both sides — which requires multimodal audio-capable LLMs (e.g. Gemini-Audio, GPT-4o-audio) reached via their SDKs, not the CLIs available here.
+* Frontier LLMs such as Claude have multimodal capabilities (image, PDF) and audio-capable variants exist in the broader ecosystem; **none of those modalities were tested in this Phase**. Any conclusion drawn from the table below applies *only* to the narrow setup of "text-only LLM operating on a 12-scalar digest with forensic priors in the prompt."
+
+**With those caveats explicit,** the table for the record:
+
+| Model | Inputs | Hemg EER % | Hemg AUROC | F1@0.5 | $/1k |
 |---|---|---:|---:|---:|---:|
-| Custom W2V2+LogReg | 768-d Wav2Vec2 embedding | 32.0 | 0.634 | 0.69 | $0.0001 |
-| Codex GPT-5.5 (zero-shot) | 12-feature digest (text) | 44.0 | 0.530 | 0.00 | $50 |
-| Claude Haiku (zero-shot) | 12-feature digest (text) | 52.0 | 0.515 | 0.52 | $0.30 |
-| Claude Opus (zero-shot) | 12-feature digest (text) | 54.0 | 0.465 | 0.32 | $4.50 |
-| **12-feature LogReg (apples-to-apples)** | **same 12 features as LLMs** | **84.0** | **0.085** | **0.00** | $0.0001 |
+| Custom W2V2+LogReg | **raw audio → 768-d Wav2Vec2 embedding** | 32.0 | 0.634 | 0.69 | $0.0001 |
+| Codex GPT-5.5 (text-only, digest) | 12 named scalars (text) | 44.0 | 0.530 | 0.00 | $50 |
+| Claude Haiku (text-only, digest) | 12 named scalars (text) | 52.0 | 0.515 | 0.52 | $0.30 |
+| Claude Opus (text-only, digest) | 12 named scalars (text) | 54.0 | 0.465 | 0.32 | $4.50 |
+| 12-feature LogReg (matched-input baseline) | 12 named scalars (numeric) | 84.0 | 0.085 | 0.00 | $0.0001 |
 
-The 12-feature specialist achieves **2.80% in-domain EER** (essentially perfect — riding the Phase 1 codec shortcut) and then **collapses to 84% EER on Hemg with AUROC 0.085** — confidently anti-predictive. The 12-feature digest IS the leakage vector identified in Phase 1 (`spec_contrast6_mean` does 66% of the in-domain importance and inverts cross-domain).
+**What this side-test legitimately does show:**
 
-**Two findings, not one:**
+1. **A LogReg confined to the same 12-scalar input the LLMs received is anti-predictive on the cross-distribution test (84% EER, AUROC 0.085).** That is, the 12-feature digest is the codec leakage vector identified in Phase 1 — the specialist trained on it cannot transfer.
+2. **Among models given that constrained text digest as their only input, the text-only LLMs do better than the matched-input specialist by 30-40 EER points.** They do worse than the W2V2 model that has access to richer signal.
+3. **The headline finding of this Phase is *not* about LLM capability.** It is the ablation: every advanced trick attempted (late fusion, PCA at 5 k values, Platt, isotonic, temperature scaling, hybrid blends) tied or hurt the W2V2+LogReg cross-distribution baseline of 32% EER. The Phase 4 champion is at the cross-distribution ceiling for this dataset/architecture.
 
-1. **Rich neural representation > both:** the 768-d W2V2 embedding is what beats Opus by 22 EER points, not the architectural choice. A specialist starved of that representation collapses.
-2. **Frontier LLMs > same-input specialist by 30-40 EER points:** on the leaky 12-feature digest, the LLMs (Codex 44%, Haiku 52%, Opus 54%) outperform the matched LogReg (84%). They achieve this by partially ignoring spurious in-distribution correlations and falling back on forensic priors learned at pre-training (jitter/shimmer ranges, spectral flatness expectations). They lose to the W2V2 model — but they decisively beat any specialist confined to the same input they were given.
+**What this side-test does NOT show, and must not be cited as showing:**
 
-This second finding is more interesting than the original "specialist beats frontier" framing and was hidden by the input-fairness gap. The post-able headline is the *combination*: rich representations beat tabular reasoning regardless of who does the reasoning, but on equal-input terms LLMs robustly beat a specialist that has memorised a domain-specific shortcut.
+* "Claude/Codex cannot detect deepfake audio" — they were not given audio.
+* "Frontier LLMs are bad at audio forensics" — they were given a deliberately limited text digest, not audio, not a spectrogram, not a richer feature set.
+* "Specialist always beats frontier on this task" — the comparison is asymmetric in inputs by design (constrained by CLI capabilities), not because the specialist is intrinsically superior.
+
+A future Phase 5 design across the project rotation should either (a) run multimodal audio-capable LLMs on raw audio via SDKs, or (b) drop the LLM head-to-head when no fair input-matched comparison is available.
 
 ## Research & References
 
@@ -116,31 +128,38 @@ Indices for the val/test split (`seed=123, stratified`) are saved to `results/ph
 ### Experiment 5.4 — Threshold geometry (sec 5)
 The plot at `results/phase5_threshold_geometry.png` shows FAR/FRR/HTER versus threshold. The score distribution is bimodal at 0 and 1 with a thin middle. EER threshold lands at **0.999** — i.e. the model is screaming "fake" on almost everything in Hemg, and the EER point is where the few items it doesn't flag align with the real class. This explains why calibration is mostly futile: the rank order is what carries the (modest) AUROC=0.634 signal.
 
-### Experiment 5.5 — LLM head-to-head (sec 7) — THE HEADLINE
-**Hypothesis:** frontier LLMs given a domain-meaningful 12-feature digest *with* forensic priors in the prompt should at least beat chance on a balanced 50-row task. If they do, the custom model's 32% EER is unimpressive. If they don't, a 8 MB LogReg on top of a frozen encoder is meaningfully better than $50/1k zero-shot LLM inference for this task.
+### Experiment 5.5 — LLM zero-shot side-test on a constrained text digest (NOT a benchmark)
+**See the "LLM side-test — explicit non-benchmark" disclaimer at the top of this report.** This experiment is included for completeness; it is *not* the headline finding of Phase 5 and must not be cited as a frontier-LLM benchmark on audio forensics.
 
-**Method:** 50 Hemg test items. Same prompt template for all three LLMs. Strict structured output (line 1 = REAL/FAKE, line 2 = probability ∈ [0,1]). 100% parse rate. Cached at `results/phase5_cache/llm_calls.json` for resumability.
+**What was actually tested:** zero-shot LLM reasoning over a 12-scalar text digest, when no audio input is available via the local CLI. The W2V2 model received a different and richer input (768-d embedding from raw audio); the matched-input baseline is the 12-feature LogReg row, which is anti-predictive on Hemg (84% EER).
 
-**Result:**
+**Method:** 50 Hemg test items. Same prompt template for all three text-only LLMs (Claude Opus, Claude Haiku, Codex GPT-5.5). Strict structured output (line 1 = REAL/FAKE, line 2 = probability ∈ [0,1]). 100% parse rate on all three. Cached at `results/phase5_cache/llm_calls.json` for resumability.
 
-| Model | parse | accuracy | F1 | precision | recall | EER % | AUROC | latency s/call | $/1k preds |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| **Custom W2V2+LogReg (8 MB)** | 100% | **0.68** | **0.69** | 0.67 | 0.72 | **32.0** | **0.634** | **0.001** | **$0.0001** |
-| Codex GPT-5.5 (zero-shot) | 100% | 0.48 | 0.00 | 0.00 | 0.00 | 44.0 | 0.530 | 8.4 | $50.00 |
-| Claude Haiku (zero-shot) | 100% | 0.48 | 0.52 | 0.48 | 0.56 | 52.0 | 0.515 | 14.6 | $0.30 |
-| Claude Opus (zero-shot) | 100% | 0.50 | 0.32 | 0.50 | 0.24 | 54.0 | 0.465 | 5.3 | $4.50 |
+**Result (input-asymmetric, do not cite as a fair head-to-head):**
+
+| Model | Inputs | parse | accuracy | F1 | EER % | AUROC | $/1k |
+|---|---|---:|---:|---:|---:|---:|---:|
+| Custom W2V2+LogReg | raw audio → 768-d Wav2Vec2 embedding | 100% | 0.68 | 0.69 | 32.0 | 0.634 | $0.0001 |
+| Codex GPT-5.5 (text-only) | 12-scalar text digest | 100% | 0.48 | 0.00 | 44.0 | 0.530 | $50.00 |
+| Claude Haiku (text-only) | 12-scalar text digest | 100% | 0.48 | 0.52 | 52.0 | 0.515 | $0.30 |
+| Claude Opus (text-only) | 12-scalar text digest | 100% | 0.50 | 0.32 | 54.0 | 0.465 | $4.50 |
+| 12-feature LogReg | same 12 scalars (matched-input baseline) | 100% | 0.50 | 0.00 | 84.0 | 0.085 | $0.0001 |
 
 **Label distribution (50 calls each, ground truth is 25 REAL / 25 FAKE):**
-* Codex predicted REAL 49/50 times — refused to commit to FAKE almost regardless of input. Zero recall on the FAKE class. EER (rank-based) is the lowest of the three only because its confidence *probabilities* still carried weak signal even when the labels collapsed to all-REAL.
-* Opus predicted REAL 38/50 — also REAL-biased.
-* Haiku predicted FAKE 29/50 — FAKE-biased the other direction.
-* All three are within 4 points of chance (50%) on accuracy.
+* Codex predicted REAL 49/50 times — under this constrained text-only setup, the model defaulted to the safer label.
+* Opus predicted REAL 38/50 — same direction, smaller bias.
+* Haiku predicted FAKE 29/50 — opposite-direction bias.
+* All three text-only LLMs are within 4 points of chance (50%) on accuracy when handed only a 12-scalar digest.
 
-**Interpretation:**
-- Custom W2V2+LogReg beats all three frontier LLMs by **12–22 EER points**, **18–22 accuracy points**, and **0.10–0.17 AUROC points** on the same 50-row task.
-- The cost-per-1k spread is **3,000× to 500,000×** in the custom model's favour.
-- The latency story isn't a fair direct comparison (CLI overhead inflates LLM numbers vs a direct API call would), but the cost number reflects genuine token economics.
-- Frontier LLMs cannot reason about forensic acoustic features under distribution shift, even with explicit priors in the prompt. They default to label biases and lose on every metric.
+**Legitimate interpretation (what this *does* show):**
+- A LogReg confined to the same 12 scalars (matched-input baseline) is anti-predictive on Hemg (AUROC 0.085, EER 84%) — confirming the Phase 1 codec leakage diagnosis.
+- Among models given only the constrained text digest, text-only LLMs outperform the matched-input specialist by 30-40 EER points by ignoring the spurious in-distribution correlations.
+- The W2V2 pipeline that has access to a richer input representation outperforms both the text-only LLMs and the matched-input specialist.
+
+**Illegitimate interpretation (what this does NOT show):**
+- "Frontier LLMs cannot do audio forensics" — they were not given audio. Multimodal audio-capable LLMs (Gemini-Audio, GPT-4o-audio, etc.) and Claude's image/PDF modalities were not tested in this Phase.
+- "Specialist beats frontier" — the inputs are asymmetric by design (CLI constraint), not because the specialist is intrinsically better.
+- Cost/latency direct comparison — meaningful only at the *system level* once a fair input-matched audio comparison is run; the numbers above are presented for cost-of-this-particular-API-call transparency, not as an LLM-vs-specialist economic statement.
 
 ### Experiment 5.6 — Hybrid blends (sec 7 cont.)
 **Hypothesis:** even if LLMs alone are bad, combining their outputs with W2V2 might pull in the borderline cases.
@@ -174,26 +193,18 @@ The plot at `results/phase5_threshold_geometry.png` shows FAR/FRR/HTER versus th
 | 18 | HC LogReg only | 66.0 | 0.299 | fusion |
 | 19 | W2V2+LogReg + Platt scaling | 68.0 | 0.366 | calibration |
 
-## Frontier Model Comparison
+## Frontier Model Comparison — REMOVED
 
-| Metric | Custom W2V2+LogReg | Claude Opus | Claude Haiku | Codex GPT-5.5 | Winner |
-|---|---:|---:|---:|---:|---|
-| EER % (lower better) | **32.0** | 54.0 | 52.0 | 44.0 | Custom by 12-22 pts |
-| Accuracy | **0.68** | 0.50 | 0.48 | 0.48 | Custom by 18-20 pts |
-| F1 | **0.69** | 0.32 | 0.52 | 0.00 | Custom by 0.17-0.69 |
-| AUROC | **0.634** | 0.465 | 0.515 | 0.530 | Custom by 0.10-0.17 |
-| Cost / 1k preds | **$0.0001** | $4.50 | $0.30 | $50.00 | Custom by 3,000× to 500,000× |
-| Latency / pred | **0.001s** | 5.3s | 14.6s | 8.4s | Custom by 5,000× to 14,000× (CLI inflated) |
+The original report had a "Frontier Model Comparison" table here naming a "Winner" by metric. **This has been removed because the comparison is input-asymmetric.** Naming a winner across input-asymmetric models would misrepresent frontier LLM capabilities. See the side-test disclaimer at the top of this report and Experiment 5.5 above for the conditions under which the LLM numbers were collected. Any winner-naming comparison must wait until a fair input-matched (raw audio in / class out) test is run via multimodal audio-capable LLMs.
 
 ## Key Findings
 
-1. **Headline:** the Phase 4 champion (8 MB W2V2+LogReg, $0.0001/1k preds) beats Claude Opus by 22 EER points and Codex GPT-5.5 by 12 EER points on cross-distribution deepfake audio detection from a 12-feature digest. This is the post-able result.
-2. **Codex's pathology:** GPT-5.5 predicted REAL 49 times out of 50. Despite a 0.0 F1 on the FAKE class, its probabilities still carried weak ranking signal (AUROC 0.530), so its EER isn't catastrophic. But its labels are useless for any threshold-based deployment.
-3. **All three LLMs are within 4 percentage points of chance accuracy.** Frontier reasoning over numeric forensic features under distribution shift is a real failure mode, even with the literature's priors handed to them in the prompt.
-4. **Hybrid actively hurts.** Best W2V2+LLM blend is 38% EER vs 32% for W2V2 alone. Adding a near-random model to a slightly-better-than-random one dilutes the signal. (Same story as Phase 4 stacking.)
-5. **The Phase 4 champion is at the cross-distribution ceiling for this dataset/architecture.** Late fusion, PCA, Platt, isotonic, and temperature all either tied or hurt. The two ties (max-confidence fusion, temperature scaling) are degenerate — max-conf always picks W2V2, temperature is monotone so EER is invariant.
-6. **Handcrafted features are anti-correlated with truth on Hemg.** HC LogReg alone has AUROC 0.299 — significantly *worse* than chance — confirming Phase 1/2's "codec shortcut" diagnosis. Anything that gives HC features non-zero weight in fusion makes the model worse.
-7. **PCA(k=256) AUROC was 0.645, slightly above the 768-d reference's 0.634.** The ranking quality improved a hair but the EER point worsened. AUROC and EER aren't the same shape on this distribution.
+1. **Headline:** the Phase 4 champion (W2V2+LogReg, 768-d Wav2Vec2 embedding) is at the cross-distribution ceiling on this dataset/architecture combo at **32% Hemg EER, AUROC 0.634**. *Every* advanced trick attempted (late fusion with handcrafted features, PCA at five k values, Platt, isotonic, temperature scaling, hybrid blends with text-only LLMs) tied or hurt this number. The ceiling is structural.
+2. **Codec leakage is anti-correlated with cross-domain truth.** HC LogReg on the full 303-d handcrafted vector has Hemg AUROC 0.299; on the 12-scalar digest subset it has AUROC 0.085 — both *worse than chance*. Anything that gives the HC representation non-zero weight in fusion makes the cross-distribution result worse. This confirms the Phase 1/2 codec-shortcut diagnosis at a deeper level.
+3. **PCA(k=256) AUROC was 0.645, slightly above the 768-d reference's 0.634.** The ranking quality improved a hair but the EER point worsened. AUROC and EER are not the same shape on this distribution.
+4. **Calibration is mostly futile when the rank order is what carries the signal.** Temperature scaling tied at 32% EER (rank-monotone, EER-invariant) with T_opt=20 — the model is severely over-confident, but flattening doesn't change EER. Platt collapsed to 68% EER (inverted decision boundary on 50 calibration points). Isotonic to 40% (overfitting).
+5. **Hybrid with the text-only LLM digests actively hurt.** Best W2V2+LLM blend is 38% EER vs 32% for W2V2 alone. Same lesson as Phase 4 stacking: don't average a working model with one that is near-chance on the input it was given.
+6. **Side-test note (NOT a key finding, NOT a benchmark):** under the deliberately constrained 12-scalar text-only setup, the LLMs (Codex 44%, Haiku 52%, Opus 54%) outperform a matched-input LogReg (84%) cross-domain by 30-40 EER points, while themselves losing to the W2V2 model. The disclaimer at the top of this report explains why this is a side-test and not a frontier-LLM benchmark.
 
 ## Error Analysis
 
@@ -201,20 +212,20 @@ The plot at `results/phase5_threshold_geometry.png` shows FAR/FRR/HTER versus th
 * All four LLM calls returned valid structured output for all 50 prompts (100% parse rate). No prompt-injection-style failures, no JSON drift, no refusals. Failures were on the answer, not the format.
 * Codex's 49/50 REAL bias did not appear in the smoke test (it answered REAL on idx=0 with prob 0.28 — the same value cell 22's smoke test logged). This is a systematic prior in the model, not a parsing bug.
 
-## Frontier Model Comparison Notes (limitations)
+## LLM Side-Test Limitations (recap of the disclaimer)
 
-* **Input asymmetry (the big one).** The W2V2 model uses a 768-d neural embedding; the LLMs use 12 named scalars. The "32% vs 54%" headline conflates representation with reasoner. The apples-to-apples row above (12-feature LogReg → 84% EER) is the input-matched baseline; it shows the LLMs *outperform* a specialist on the same input by 30-40 EER points.
-* Latency is CLI-inflated. Real per-API-call latency would be 5-10× faster. Cost numbers are real.
+* **Input asymmetry by design (CLI constraint).** The W2V2 model takes raw audio; the local CLIs (`claude --print`, `codex exec`) accept text + images, **not audio**. So the LLMs were given a 12-scalar text digest. The W2V2 vs LLM rows are not a fair head-to-head and are not presented as one in this revised report.
+* **No multimodal audio LLMs were tested.** Gemini-Audio, GPT-4o-audio, and any other audio-capable variants were not evaluated. Claude's image/PDF modalities were not evaluated either. None of the conclusions in this report apply to those.
+* Latency is CLI-inflated. Real per-API-call latency would be 5-10× faster. Cost numbers reflect real per-token prices but should not be cited as "specialist beats frontier" economics — that requires a fair input-matched comparison first.
 * Sample size n=50 is the same as Phase 4's hemg_test for apples-to-apples — within-sample comparisons are valid; absolute numbers carry ±~7% margin (binomial CI on 50 trials).
-* The LLMs were given a 12-feature digest, not the raw audio or the full 303-d HC vector. A larger digest or chain-of-thought prompting might lift the LLM numbers; not tested today (out of phase scope).
 
 ## Next Steps (Phase 6 — production pipeline + Streamlit UI)
 
 * The cross-distribution ceiling is real. Phase 6 ships the W2V2+LogReg pipeline as the production model, documents the 32% Hemg EER honestly, and builds a Streamlit UI that:
   - shows the EER on both garystafford (~1.1%) and Hemg (~32%) so the deployment audience understands the gap
   - includes a "what the model sees" panel rendering the 12-feature digest alongside the prediction
-  - includes the LLM head-to-head plot as the main credibility shot — "this is why you don't just call GPT for this"
-* Phase 7 polish should prioritise the README headline: "An 8 MB classifier beat Claude Opus by 22 EER points at 45,000× the cost. Here's why frontier LLMs fail at forensic audio."
+* Phase 7 polish should prioritise the README headline around the *real* finding: **the cross-distribution ceiling is structural**. Every post-hoc trick (fusion, PCA, calibration, hybrid) tied or hurt the W2V2+LogReg baseline; the codec-shortcut diagnosis from Phase 1 is confirmed at multiple representation levels. **Do not republish the original LLM-vs-specialist framing** — it conflated representation with reasoner.
+* Future LLM head-to-head (deferred): if a fair audio-in / class-out comparison is wanted, run audio-capable LLMs (Gemini-Audio, GPT-4o-audio) via SDK, with the *same raw audio* the W2V2 model receives. That is the only setup that justifies any "specialist vs frontier" framing.
 
 ## References Used Today
 
