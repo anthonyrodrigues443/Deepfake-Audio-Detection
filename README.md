@@ -3,12 +3,15 @@
 Detection of synthetic / vocoded speech with classical ML and deep learning, benchmarked
 against the published deepfake-audio literature.
 
-> **Status: Phase 3 complete (2026-05-06).** Phase 1 handcrafted best EER: **0.00%**
+> **Status: Phase 5 complete (2026-05-08).** Phase 1 handcrafted best EER: **0.00%**
 > (LogReg / RandomForest) — flagged as a single-bin codec-shortcut artifact.
 > Phase 2 end-to-end mel-CNN: **2.41% EER** (AUROC 0.992) — squarely inside the
 > published deep-learning benchmark range and the project's first honest baseline.
 > Phase 3 best cross-domain (Hemg): **36.0% EER, 0.670 AUROC** (XGBoost + combo aug).
-> See [`reports/day2_phase2_report.md`](reports/day2_phase2_report.md) for the
+> Phase 4 cross-domain champion: W2V2+LogReg at **32.0% Hemg EER, 0.634 AUROC**.
+> Phase 5 ablation: every advanced trick (late fusion, PCA, Platt/isotonic/temperature
+> calibration, hybrid blends) tied or hurt — the cross-distribution ceiling is structural.
+> See [`reports/day5_phase5_report.md`](reports/day5_phase5_report.md) for the
 > latest research log and [`results/`](results/) for plots and metrics.
 
 ## Domain
@@ -122,6 +125,32 @@ into `data/raw/hf_cache/`.
 **Surprise:** The end-to-end CNN did **not** collapse to ~0% EER like LogReg. We expected it to trivially exploit the codec leak too. It didn't — which says the leak lives inside handcrafted spectral summary statistics, not in the raw audio content the CNN actually sees.<br><br>
 **Research:** Frank & Schönherr, 2021 — *WaveFake: A Data Set to Facilitate Audio Deepfake Detection* (arXiv:2111.02813) — handcrafted classifiers should land at 6–12% EER on properly-hard data, so anything sub-1% is the canary for shortcut learning. Phase 2 confirms the canary fired for the Phase 1 pipeline; the CNN result lands inside the published-benchmark range.<br><br>
 **Best Model So Far:** Mel-spectrogram CNN — **2.41% test EER, 0.992 AUROC**. Closer to literature than the Phase 1 LogReg (0.00%, codec-shortcut). Phase 3 then improved cross-domain behavior to **36.0% Hemg EER, 0.670 AUROC** with per-sample combo augmentation (XGBoost).
+
+</td>
+</tr>
+</table>
+
+### Phase 5: Advanced Techniques + Ablation — 2026-05-08
+
+<table>
+<tr>
+<td valign="top" width="38%">
+
+**What was tested:** Six families of post-hoc fixes against the Phase 4 W2V2+LogReg champion (32% Hemg EER, AUROC 0.634): late fusion with handcrafted features (5 variants), PCA compression at k ∈ {32, 64, 128, 256, 384}, Platt / isotonic / temperature calibration, and hybrid blends with text-only LLM digests. 19 approaches ranked head-to-head on the same 50-row Hemg test split.<br><br>
+**What worked best:** *Nothing beat the baseline.* Three approaches **tied** at 32% EER (max-confidence fusion — degenerate, always picks W2V2; temperature scaling at T=20 — rank-monotone so EER is invariant; and the W2V2+LogReg reference itself). Every other variant strictly hurt.
+
+</td>
+<td align="center" width="24%">
+
+<img src="results/phase5_ablation.png" width="220">
+
+</td>
+<td valign="top" width="38%">
+
+**Key Insight:** The cross-distribution ceiling is **structural**, not addressable by post-hoc surgery. Closing the 32% Hemg gap needs more diverse training data and codec/RIR augmentation done at scale (Phase 3 style), or a different encoder — not fusion, calibration, compression, or ensembling.<br><br>
+**Surprise:** Platt scaling **inverted** the decision boundary on 50 calibration points (68% EER, AUROC 0.366 — flipped from 0.634). HC late-fusion was **anti-informative** — HC LogReg alone has Hemg AUROC 0.299, so any non-zero HC weight pulled predictions in the wrong direction. Temperature optimiser hit T=20 (the upper bound), confirming W2V2 LogReg is severely over-confident — but rank-based EER is invariant to monotone calibration.<br><br>
+**Research:** Müller et al., 2024 — *Speaker Anti-Spoofing with Self-Supervised Features* (arXiv:2402.06692) — predicted calibration alone wouldn't fix cross-domain transfer; confirmed. Bird & Lotfi, 2024 — *Real-Time Detection of AI-Generated Speech* (arXiv:2308.12734) — claimed handcrafted forensic features carry orthogonal signal to neural embeddings; refuted on Hemg (every fusion variant degraded EER).<br><br>
+**Best Model So Far:** W2V2+LogReg (Phase 4 champion) — **32.0% Hemg EER, AUROC 0.634, 1.11% in-domain EER**, 8 MB, $0.0001/1k preds. The cross-distribution ceiling for this dataset/architecture combo.
 
 </td>
 </tr>
