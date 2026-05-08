@@ -1,0 +1,16 @@
+approach,Hemg_test_EER_%,Hemg_test_AUROC,family
+Phase 4 champion: W2V2+LogReg (ref),32.0,0.6336,baseline
+max-confidence,32.0,0.632,fusion
+W2V2+LogReg + temperature (T=20.00),32.0,0.6304000000000001,calibration
+W2V2 PCA(k=64)+LogReg,40.0,0.5983999999999999,compression
+W2V2+LogReg + isotonic,40.0,0.6224,calibration
+W2V2 PCA(k=128)+LogReg,42.0,0.6192,compression
+W2V2 PCA(k=384)+LogReg,43.99999999999999,0.6175999999999999,compression
+W2V2 PCA(k=256)+LogReg,44.0,0.6448,compression
+W2V2 PCA(k=32)+LogReg,46.0,0.5935999999999999,compression
+weighted (0.7·W2V2 + 0.3·HC),56.00000000000001,0.4352,fusion
+mean (0.5·W2V2 + 0.5·HC),60.0,0.424,fusion
+weighted (0.3·W2V2 + 0.7·HC),62.0,0.3648,fusion
+geometric mean,62.0,0.40159999999999996,fusion
+HC LogReg only,66.0,0.29919999999999997,fusion
+W2V2+LogReg + Platt scaling,68.0,0.3664,calibration

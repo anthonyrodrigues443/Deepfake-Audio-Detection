@@ -1,0 +1,340 @@
+{
+  "phase": 5,
+  "date": "2026-05-08",
+  "protocol": {
+    "hemg_test_n": 50,
+    "hemg_val_n": 50,
+    "split_seed": 123,
+    "llm_sample": 50
+  },
+  "reference_w2v2_logreg": {
+    "EER_in_pct": 1.112347052280311,
+    "EER_hemg_test_pct": 32.0,
+    "AUROC_hemg_test": 0.6336,
+    "threshold_hemg_test": 0.9973638973315838
+  },
+  "late_fusion": [
+    [
+      "W2V2 LogReg (ref)",
+      32.0,
+      0.6336
+    ],
+    [
+      "HC LogReg only",
+      66.0,
+      0.29919999999999997
+    ],
+    [
+      "mean (0.5\u00b7W2V2 + 0.5\u00b7HC)",
+      60.0,
+      0.424
+    ],
+    [
+      "weighted (0.7\u00b7W2V2 + 0.3\u00b7HC)",
+      56.00000000000001,
+      0.4352
+    ],
+    [
+      "weighted (0.3\u00b7W2V2 + 0.7\u00b7HC)",
+      62.0,
+      0.3648
+    ],
+    [
+      "max-confidence",
+      32.0,
+      0.632
+    ],
+    [
+      "geometric mean",
+      62.0,
+      0.40159999999999996
+    ]
+  ],
+  "pca": [
+    [
+      32,
+      "0.8535802",
+      2.224694104560622,
+      0.9941910765047584,
+      46.0,
+      0.5935999999999999
+    ],
+    [
+      64,
+      "0.9297695",
+      1.649981460882461,
+      0.9987640588307997,
+      40.0,
+      0.5983999999999999
+    ],
+    [
+      128,
+      "0.9777843",
+      0.0,
+      1.0,
+      42.0,
+      0.6192
+    ],
+    [
+      256,
+      "0.99699956",
+      0.5376344086021501,
+      0.99962921764924,
+      44.0,
+      0.6448
+    ],
+    [
+      384,
+      "0.9996967",
+      2.224694104560622,
+      0.9993820294153999,
+      43.99999999999999,
+      0.6175999999999999
+    ]
+  ],
+  "calibration": [
+    [
+      "uncalibrated",
+      32.0,
+      0.6336
+    ],
+    [
+      "Platt scaling",
+      68.0,
+      0.3664
+    ],
+    [
+      "isotonic",
+      40.0,
+      0.6224
+    ],
+    [
+      "temperature (T=20.00)",
+      32.0,
+      0.6304000000000001
+    ]
+  ],
+  "temperature": 19.99999485106857,
+  "ablation_summary": [
+    {
+      "approach": "Phase 4 champion: W2V2+LogReg (ref)",
+      "Hemg_test_EER_%": 32.0,
+      "Hemg_test_AUROC": 0.6336,
+      "family": "baseline"
+    },
+    {
+      "approach": "max-confidence",
+      "Hemg_test_EER_%": 32.0,
+      "Hemg_test_AUROC": 0.632,
+      "family": "fusion"
+    },
+    {
+      "approach": "W2V2+LogReg + temperature (T=20.00)",
+      "Hemg_test_EER_%": 32.0,
+      "Hemg_test_AUROC": 0.6304000000000001,
+      "family": "calibration"
+    },
+    {
+      "approach": "W2V2 PCA(k=64)+LogReg",
+      "Hemg_test_EER_%": 40.0,
+      "Hemg_test_AUROC": 0.5983999999999999,
+      "family": "compression"
+    },
+    {
+      "approach": "W2V2+LogReg + isotonic",
+      "Hemg_test_EER_%": 40.0,
+      "Hemg_test_AUROC": 0.6224,
+      "family": "calibration"
+    },
+    {
+      "approach": "W2V2 PCA(k=128)+LogReg",
+      "Hemg_test_EER_%": 42.0,
+      "Hemg_test_AUROC": 0.6192,
+      "family": "compression"
+    },
+    {
+      "approach": "W2V2 PCA(k=384)+LogReg",
+      "Hemg_test_EER_%": 43.99999999999999,
+      "Hemg_test_AUROC": 0.6175999999999999,
+      "family": "compression"
+    },
+    {
+      "approach": "W2V2 PCA(k=256)+LogReg",
+      "Hemg_test_EER_%": 44.0,
+      "Hemg_test_AUROC": 0.6448,
+      "family": "compression"
+    },
+    {
+      "approach": "W2V2 PCA(k=32)+LogReg",
+      "Hemg_test_EER_%": 46.0,
+      "Hemg_test_AUROC": 0.5935999999999999,
+      "family": "compression"
+    },
+    {
+      "approach": "weighted (0.7\u00b7W2V2 + 0.3\u00b7HC)",
+      "Hemg_test_EER_%": 56.00000000000001,
+      "Hemg_test_AUROC": 0.4352,
+      "family": "fusion"
+    },
+    {
+      "approach": "mean (0.5\u00b7W2V2 + 0.5\u00b7HC)",
+      "Hemg_test_EER_%": 60.0,
+      "Hemg_test_AUROC": 0.424,
+      "family": "fusion"
+    },
+    {
+      "approach": "weighted (0.3\u00b7W2V2 + 0.7\u00b7HC)",
+      "Hemg_test_EER_%": 62.0,
+      "Hemg_test_AUROC": 0.3648,
+      "family": "fusion"
+    },
+    {
+      "approach": "geometric mean",
+      "Hemg_test_EER_%": 62.0,
+      "Hemg_test_AUROC": 0.40159999999999996,
+      "family": "fusion"
+    },
+    {
+      "approach": "HC LogReg only",
+      "Hemg_test_EER_%": 66.0,
+      "Hemg_test_AUROC": 0.29919999999999997,
+      "family": "fusion"
+    },
+    {
+      "approach": "W2V2+LogReg + Platt scaling",
+      "Hemg_test_EER_%": 68.0,
+      "Hemg_test_AUROC": 0.3664,
+      "family": "calibration"
+    }
+  ],
+  "llm_head_to_head": [
+    {
+      "model": "Custom: W2V2+LogReg (frozen, 8MB)",
+      "n": 50,
+      "parse_rate": 1.0,
+      "accuracy": 0.68,
+      "f1": 0.6923076923076923,
+      "precision": 0.6666666666666666,
+      "recall": 0.72,
+      "eer": 32.0,
+      "auroc": 0.6336,
+      "latency_mean": 0.001,
+      "cost_per_1k_USD": 9.999999999999999e-05
+    },
+    {
+      "model": "Claude Haiku (zero-shot, digest)",
+      "n": 50,
+      "parse_rate": 1.0,
+      "accuracy": 0.48,
+      "f1": 0.5185185185185185,
+      "precision": 0.4827586206896552,
+      "recall": 0.56,
+      "eer": 52.0,
+      "auroc": 0.5152,
+      "latency_mean": 14.634562702178956,
+      "cost_per_1k_USD": 0.3
+    },
+    {
+      "model": "Claude Opus (zero-shot, digest)",
+      "n": 50,
+      "parse_rate": 1.0,
+      "accuracy": 0.5,
+      "f1": 0.32432432432432434,
+      "precision": 0.5,
+      "recall": 0.24,
+      "eer": 54.0,
+      "auroc": 0.4648,
+      "latency_mean": 5.287633953094482,
+      "cost_per_1k_USD": 4.5
+    },
+    {
+      "model": "Codex GPT-5.5 (zero-shot, digest)",
+      "n": 50,
+      "parse_rate": 1.0,
+      "accuracy": 0.48,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "eer": 43.99999999999999,
+      "auroc": 0.5296000000000001,
+      "latency_mean": 8.399915194511413,
+      "cost_per_1k_USD": 50.0
+    }
+  ],
+  "hybrid_blends": [
+    {
+      "blend": "0.5\u00b7W2V2 + 0.5\u00b7Haiku",
+      "Hemg_test_EER_%": 38.0,
+      "Hemg_test_AUROC": 0.6144
+    },
+    {
+      "blend": "0.7\u00b7W2V2 + 0.3\u00b7Codex",
+      "Hemg_test_EER_%": 40.0,
+      "Hemg_test_AUROC": 0.5791999999999999
+    },
+    {
+      "blend": "0.3\u00b7W2V2 + 0.7\u00b7Haiku",
+      "Hemg_test_EER_%": 42.0,
+      "Hemg_test_AUROC": 0.5743999999999999
+    },
+    {
+      "blend": "0.3\u00b7W2V2 + 0.7\u00b7mean(LLM3)",
+      "Hemg_test_EER_%": 43.99999999999999,
+      "Hemg_test_AUROC": 0.5728
+    },
+    {
+      "blend": "0.5\u00b7W2V2 + 0.5\u00b7mean(LLM3)",
+      "Hemg_test_EER_%": 43.99999999999999,
+      "Hemg_test_AUROC": 0.5728
+    },
+    {
+      "blend": "0.7\u00b7W2V2 + 0.3\u00b7mean(LLM3)",
+      "Hemg_test_EER_%": 43.99999999999999,
+      "Hemg_test_AUROC": 0.5968
+    },
+    {
+      "blend": "0.7\u00b7W2V2 + 0.3\u00b7Haiku",
+      "Hemg_test_EER_%": 46.0,
+      "Hemg_test_AUROC": 0.6144000000000001
+    },
+    {
+      "blend": "0.5\u00b7W2V2 + 0.5\u00b7Opus",
+      "Hemg_test_EER_%": 46.0,
+      "Hemg_test_AUROC": 0.5376000000000001
+    },
+    {
+      "blend": "0.3\u00b7W2V2 + 0.7\u00b7Codex",
+      "Hemg_test_EER_%": 46.0,
+      "Hemg_test_AUROC": 0.5551999999999999
+    },
+    {
+      "blend": "0.5\u00b7W2V2 + 0.5\u00b7Codex",
+      "Hemg_test_EER_%": 46.0,
+      "Hemg_test_AUROC": 0.5648000000000001
+    },
+    {
+      "blend": "0.3\u00b7W2V2 + 0.7\u00b7Opus",
+      "Hemg_test_EER_%": 48.0,
+      "Hemg_test_AUROC": 0.49119999999999997
+    },
+    {
+      "blend": "0.7\u00b7W2V2 + 0.3\u00b7Opus",
+      "Hemg_test_EER_%": 48.0,
+      "Hemg_test_AUROC": 0.536
+    }
+  ],
+  "best_advanced": {
+    "approach": "Phase 4 champion: W2V2+LogReg (ref)",
+    "EER_pct": 32.0
+  },
+  "best_llm": {
+    "model": "Codex GPT-5.5 (zero-shot, digest)",
+    "EER_pct": 43.99999999999999,
+    "AUROC": 0.5296000000000001
+  },
+  "best_hybrid": {
+    "blend": "0.5\u00b7W2V2 + 0.5\u00b7Haiku",
+    "EER_pct": 38.0,
+    "AUROC": 0.6144
+  }
+}
