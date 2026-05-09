@@ -3,7 +3,7 @@
 Detection of synthetic / vocoded speech with classical ML and deep learning, benchmarked
 against the published deepfake-audio literature.
 
-> **Status: Phase 5 complete (2026-05-08).** Phase 1 handcrafted best EER: **0.00%**
+> **Status: Phase 6 complete (2026-05-09).** Phase 1 handcrafted best EER: **0.00%**
 > (LogReg / RandomForest) — flagged as a single-bin codec-shortcut artifact.
 > Phase 2 end-to-end mel-CNN: **2.41% EER** (AUROC 0.992) — squarely inside the
 > published deep-learning benchmark range and the project's first honest baseline.
@@ -11,7 +11,10 @@ against the published deepfake-audio literature.
 > Phase 4 cross-domain champion: W2V2+LogReg at **32.0% Hemg EER, 0.634 AUROC**.
 > Phase 5 ablation: every advanced trick (late fusion, PCA, Platt/isotonic/temperature
 > calibration, hybrid blends) tied or hurt — the cross-distribution ceiling is structural.
-> See [`reports/day5_phase5_report.md`](reports/day5_phase5_report.md) for the
+> Phase 6 production pipeline: 26 KB joblib bundle, **15.2 ms p50** warm latency
+> (6.1 s cold start), Streamlit UI surfacing in-domain (1.11% EER) and full-100 Hemg
+> cross-distribution (46.0% EER) on the same screen.
+> See [`reports/day6_phase6_report.md`](reports/day6_phase6_report.md) for the
 > latest research log and [`results/`](results/) for plots and metrics.
 
 ## Domain
@@ -151,6 +154,32 @@ into `data/raw/hf_cache/`.
 **Surprise:** Platt scaling **inverted** the decision boundary on 50 calibration points (68% EER, AUROC 0.366 — flipped from 0.634). HC late-fusion was **anti-informative** — HC LogReg alone has Hemg AUROC 0.299, so any non-zero HC weight pulled predictions in the wrong direction. Temperature optimiser hit T=20 (the upper bound), confirming W2V2 LogReg is severely over-confident — but rank-based EER is invariant to monotone calibration.<br><br>
 **Research:** Müller et al., 2024 — *Speaker Anti-Spoofing with Self-Supervised Features* (arXiv:2402.06692) — predicted calibration alone wouldn't fix cross-domain transfer; confirmed. Bird & Lotfi, 2024 — *Real-Time Detection of AI-Generated Speech* (arXiv:2308.12734) — claimed handcrafted forensic features carry orthogonal signal to neural embeddings; refuted on Hemg (every fusion variant degraded EER).<br><br>
 **Best Model So Far:** W2V2+LogReg (Phase 4 champion) — **32.0% Hemg EER, AUROC 0.634, 1.11% in-domain EER**, 8 MB, $0.0001/1k preds. The cross-distribution ceiling for this dataset/architecture combo.
+
+</td>
+</tr>
+</table>
+
+### Phase 6: Production pipeline + Streamlit UI — 2026-05-09
+
+<table>
+<tr>
+<td valign="top" width="38%">
+
+**What was tested:** Took the Phase 4 W2V2+LogReg champion off the notebook bench and put it behind a single 26 KB joblib bundle, a `python -m src.predict` CLI, an evaluation gate, and a 3-tab Streamlit UI. Headline numbers: warm latency **p50=15.2 ms / p95=17.1 ms**, cold start ~6.1 s.<br><br>
+**What worked best:** Reproducing Phase 4 reference numbers exactly via the production bundle — in-domain 1.11% EER (n=180) and full-100 Hemg cross-distribution 46.00% EER, both surfaced in the same UI sidebar so no deployer sees one without the other.
+
+</td>
+<td align="center" width="24%">
+
+<img src="results/phase6_pipeline_schematic.png" width="220">
+
+</td>
+<td valign="top" width="38%">
+
+**Key Insight:** Operationally, this is two models on the same screen — near-SOTA in-domain (1.11% EER, ROC 0.999) and barely-better-than-chance cross-distribution (46% EER, ROC 0.559). Hiding the cross-distribution number behind the in-domain headline would re-create exactly the framing failure Phase 5 had to retract.<br><br>
+**Surprise:** Cold-start dominates first-call latency by **400×** (6.1 s vs ~15 ms p50). The 360 MB W2V2 weights + first MPS shader compile are the cost; any deployment that lazy-loads the encoder on first request will time out. The trained artifact itself is 26 KB — the encoder is the cost, not the head.<br><br>
+**Research:** HF Wav2Vec2 ASR chunking blog (huggingface.co/blog/asr-chunking) — confirmed chunk-with-stride is the standard >1.5 s pattern; Phase 4's 1.5 s window kept comparability and is the contract `data_pipeline.load_and_preprocess` enforces. HF dataset card limitation note adopted verbatim into the model card's Limitations section.<br><br>
+**Best Model So Far:** W2V2+LogReg `phase6-2026-05-09` production bundle — **1.11% in-domain EER (ROC 0.999), 46.00% Hemg cross-distribution EER (n=100, ROC 0.559)**, 26 KB on disk, 15.2 ms p50 warm latency.
 
 </td>
 </tr>
