@@ -1,0 +1,10 @@
+{
+  "n_warm": 30,
+  "warm_total_ms_p50": 15.185249969363213,
+  "warm_total_ms_p95": 17.100741673493758,
+  "warm_total_ms_mean": 15.427666576579213,
+  "warm_total_ms_min": 14.067083015106618,
+  "cold_total_ms_observed": 6120.0,
+  "device_env": "mps (apple silicon, M-series)",
+  "method": "predict.predict_file with bundle preloaded; encoder warmed"
+}

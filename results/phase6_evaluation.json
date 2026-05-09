@@ -1,0 +1,51 @@
+{
+  "model_version": "phase6-2026-05-09",
+  "encoder_id": "facebook/wav2vec2-base",
+  "threshold": 0.5,
+  "splits": [
+    {
+      "split": "garystafford_test_in_domain",
+      "n": 180,
+      "accuracy": 0.9888888888888889,
+      "f1": 0.989247311827957,
+      "precision": 0.989247311827957,
+      "recall": 0.989247311827957,
+      "roc_auc": 0.9993820294153999,
+      "eer_pct": 1.112347052280311,
+      "eer_threshold": 0.5123008944367288,
+      "confusion": [
+        [
+          86,
+          1
+        ],
+        [
+          1,
+          92
+        ]
+      ],
+      "n_pos": 93
+    },
+    {
+      "split": "hemg_full_cross_distribution",
+      "n": 100,
+      "accuracy": 0.52,
+      "f1": 0.6521739130434783,
+      "precision": 0.5113636363636364,
+      "recall": 0.9,
+      "roc_auc": 0.5588,
+      "eer_pct": 46.0,
+      "eer_threshold": 0.9994464178532184,
+      "confusion": [
+        [
+          7,
+          43
+        ],
+        [
+          5,
+          45
+        ]
+      ],
+      "n_pos": 50
+    }
+  ]
+}

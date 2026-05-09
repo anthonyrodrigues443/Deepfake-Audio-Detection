@@ -19,3 +19,7 @@ nbconvert>=7.0
 ipykernel>=6.29
 pyyaml>=6.0
 pytest>=8.0
+streamlit>=1.30
+torch>=2.0
+transformers>=4.40
+optuna>=3.5
