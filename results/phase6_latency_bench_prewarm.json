@@ -1,0 +1,28 @@
+{
+  "method": "fresh-subprocess A/B; dummy 1.5 s silence; predict_array end-to-end timing",
+  "device_env": "mps (apple silicon, M-series)",
+  "n_warm": 30,
+  "scenarios": {
+    "no_prewarm": {
+      "scenario": "no_prewarm",
+      "first_user_ms": 8133.8,
+      "warm_p50_ms": 21.33,
+      "warm_p95_ms": 25.57,
+      "warm_mean_ms": 23.17,
+      "warm_min_ms": 15.71,
+      "warm_n": 30
+    },
+    "with_prewarm": {
+      "scenario": "with_prewarm",
+      "first_user_ms": 17.7,
+      "warm_p50_ms": 21.94,
+      "warm_p95_ms": 24.92,
+      "warm_mean_ms": 21.13,
+      "warm_min_ms": 15.25,
+      "warm_n": 30,
+      "prewarm_ms": 7633.1
+    }
+  },
+  "first_user_speedup": 459.5,
+  "first_user_delta_ms": 8116.0
+}
