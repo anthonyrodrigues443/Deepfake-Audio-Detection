@@ -42,6 +42,32 @@ def _load_pipeline():
     return bundle, feat_ext, model, device
 
 
+@st.cache_resource(show_spinner="Pre-warming wav2vec2 + MPS shader graph (one-time, ~6 s)…")
+def _prewarm() -> dict:
+    """Pre-warm the encoder + first forward-pass shader compile at app boot.
+
+    Loading the model is only half of the cold-start cost — the other half is
+    the first MPS shader compile, which only happens on a real forward pass.
+    Running a dummy ``predict_array`` over 1.5 s of silence at boot pays both
+    costs once, so the first real user request gets the warm ~15 ms path
+    instead of the ~6 s cold start.
+
+    Cached as a resource so it runs once per Streamlit process, not per user
+    session.
+    """
+    from src.data_pipeline import AudioConfig
+    from src.predict import predict_array
+
+    _load_pipeline()  # ensure encoder + bundle are in memory before the dummy call
+
+    cfg = AudioConfig()
+    dummy = np.zeros(cfg.target_len, dtype=np.float32)
+    t0 = time.perf_counter()
+    predict_array(dummy, sr=cfg.target_sr, threshold=0.5)
+    cold_ms = (time.perf_counter() - t0) * 1000.0
+    return {"cold_ms_observed": cold_ms}
+
+
 @st.cache_data(show_spinner=False)
 def _load_eval_results():
     p = RESULTS / "phase6_evaluation.json"
@@ -136,6 +162,10 @@ def compute_forensic_digest(audio_bytes: bytes) -> dict:
 
 
 def main() -> None:
+    # Pre-warm encoder + MPS shader graph at app boot so the first real user
+    # request gets the warm path (~15 ms) rather than the 6 s cold start.
+    prewarm_info = _prewarm()
+
     st.title("Deepfake Audio Detector")
     st.caption(
         "Wav2Vec2-base (frozen 768-d) + Logistic Regression head — Phase 6 production demo."
@@ -185,7 +215,11 @@ def main() -> None:
             st.header("Inference latency")
             st.metric("Warm p50", f"{bench['warm_total_ms_p50']:.1f} ms")
             st.metric("Warm p95", f"{bench['warm_total_ms_p95']:.1f} ms")
-            st.caption(f"Cold start: {bench['cold_total_ms_observed']/1000:.1f} s (one-time model load)")
+            cold_observed = prewarm_info.get("cold_ms_observed", bench["cold_total_ms_observed"]) / 1000.0
+            st.caption(
+                f"Cold start: {cold_observed:.1f} s — paid once at app boot (pre-warm). "
+                "First user request gets the warm path."
+            )
 
     tab_predict, tab_research, tab_about = st.tabs(["Predict", "Research", "About / Limitations"])
 
