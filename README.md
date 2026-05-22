@@ -119,6 +119,25 @@ to this repo; the notebooks/scripts download it on first run into `data/raw/`.
 
 ---
 
+## Streamlit UI
+
+`streamlit run app.py` — three tabs (Predict / Research / About-Limitations) on the production bundle. The sidebar surfaces in-domain (1.11% EER) **and** cross-distribution (46% EER) metric cards together so no deployer sees the headline without the gap.
+
+<table>
+<tr>
+<td align="center" width="50%">
+<img src="results/ui_screenshot.png" alt="Predict tab: FAKE verdict on a demo clip, p(FAKE)=0.77, 47 ms latency, forensic-feature digest, in-domain & cross-dist metric cards in sidebar."><br>
+<sub><b>Predict tab</b> — upload, verdict, p(FAKE), latency, 12-feature interpretable digest (Phase 5).</sub>
+</td>
+<td align="center" width="50%">
+<img src="results/ui_screenshot_research.png" alt="Research tab: in-domain vs cross-distribution table, LLM head-to-head with input-fairness disclosure inline, apples-to-apples comparison, Phase 1-5 highlights."><br>
+<sub><b>Research tab</b> — in-domain vs Hemg, LLM head-to-head with the input-fairness disclosure inline, Phase 1-5 highlights.</sub>
+</td>
+</tr>
+</table>
+
+---
+
 ## Iteration Summary
 
 ### Phase 1: Domain Research, Dataset, EDA, Baseline — 2026-05-04
@@ -263,7 +282,7 @@ to this repo; the notebooks/scripts download it on first run into `data/raw/`.
 </td>
 <td align="center" width="24%">
 
-<img src="results/phase6_pipeline_schematic.png" width="220">
+<img src="results/ui_screenshot.png" width="220" alt="Streamlit Predict tab — FAKE verdict, p(FAKE)=0.77, 47 ms latency, both in-domain (1.11% EER) and cross-distribution (46% EER) metric cards visible in the sidebar.">
 
 </td>
 <td valign="top" width="38%">

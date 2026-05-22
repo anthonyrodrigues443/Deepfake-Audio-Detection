@@ -119,7 +119,7 @@ In-domain reference (1.11% EER) and Hemg full-100 reference (46% EER) reproduced
 
 ## What didn't work / wasn't built today
 
-- **No live UI screenshot capture in the cron run.** The dashboard PNG and the existing Phase 6 `phase6_pipeline_schematic.png` substitute for it. Real UI screenshot deferred to the next interactive session.
+- **Live UI screenshot capture — closed mid-session** after user feedback (the Phase 6 cron had deferred it because the run was headless). Headless Streamlit on `localhost:8501` + Playwright (Chromium 1217 via `executable_path` override, since the freshly-installed playwright wanted 1223 and that download was slow) → upload `results/_demo_clip.wav` (1.5 s synthetic voice-like signal, F0=180 Hz + harmonics + noise; gitignored) → wait for the Verdict element → full-page screenshot. Two captures committed: `results/ui_screenshot.png` (Predict tab, 398 KB — FAKE verdict, p(FAKE)=0.77, 47.1 ms latency, all 4 KPI cards visible in sidebar) and `results/ui_screenshot_research.png` (Research tab, 588 KB — in-domain vs cross-distribution table, LLM head-to-head with the input-fairness disclosure inline, Phase 1-5 highlights). Capture script committed at `scripts/capture_ui_screenshot.py` so future sessions can re-shoot in one command: `streamlit run app.py --server.headless true & python scripts/capture_ui_screenshot.py`.
 - **No ONNX export.** Out of scope for the 7-day sprint. The LogReg head is not the latency bottleneck — the W2V2 encode is. A reasonable Phase 8+ deliverable if real-time-critical deployment is needed.
 - **No multilingual evaluation.** The training data is English-only and the model card states it. Cross-lingual evaluation is a real follow-up; it's not a Phase 7 deliverable.
 - **No audio-capable LLM head-to-head.** Gemini-Audio and GPT-4o-audio were not tested. The Phase 5 retraction explicitly closed this loop: the project rule going forward is multimodal LLMs on raw audio or no LLM headline. Future sprint deliverable.
@@ -135,6 +135,9 @@ In-domain reference (1.11% EER) and Hemg full-100 reference (46% EER) reproduced
 - `models/model_card.md` — added `phase7-2026-05-10` versioning entry
 - `results/EXPERIMENT_LOG.md` — full rewrite (project-wide leaderboard)
 - `results/headline_dashboard.png` — new
+- `results/ui_screenshot.png`, `results/ui_screenshot_research.png` — new (real Streamlit captures, closes the Phase 6 deferral)
+- `scripts/capture_ui_screenshot.py` — new (headless-Streamlit + Playwright capture, regenerable)
+- `.gitignore` — added `results/_demo_clip.wav` (intermediate audio used by the screenshot capture)
 - `results/phase6_evaluation.json` — refreshed (same numbers, new model_version field)
 - `README.md` — rewrite (TL;DR, dashboard, all-phases iteration summary, what-this-is/isn't, input-fairness)
 - `reports/day7_phase7_report.md` — this file

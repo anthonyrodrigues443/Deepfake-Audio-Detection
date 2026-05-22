@@ -17,6 +17,7 @@ models/*.joblib
 models/*.pt
 models/*.bin
 results/cache/
+results/_demo_clip.wav
 *.log
 .cache/
 .pytest_cache/
