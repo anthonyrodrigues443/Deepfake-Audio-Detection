@@ -71,6 +71,7 @@ When matched on the same 12-feature input, an apples-to-apples LogReg specialist
 
 ## Model versioning
 - `phase6-2026-05-09` — initial production bundle. Frozen W2V2-base encoder, LogReg head, threshold = 0.5 default.
+- `phase7-2026-05-10` — re-trained head with the current sklearn version (1.8.x) to silence the unpickle InconsistentVersionWarning. Embeddings, hyperparameters, and metrics are byte-identical to `phase6` (in-domain ROC=0.9994, EER=1.11%; Hemg full-100 ROC=0.559, EER=46%). No behavior change — version bump only.
 
 ## Contact
 Repo issues: <https://github.com/anthonyrodrigues443/Deepfake-Audio-Detection/issues>.
