@@ -87,7 +87,7 @@ def main() -> int:
     print(f"holdout cross-domain Hemg ROC-AUC: {auc_hemg:.4f}")
 
     bundle = {
-        "version": "phase6-2026-05-09",
+        "version": "phase7-2026-05-10",
         "encoder_id": "facebook/wav2vec2-base",
         "encoder_hidden_size": 768,
         "head": head,

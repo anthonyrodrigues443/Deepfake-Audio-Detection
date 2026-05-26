@@ -1,5 +1,5 @@
 {
-  "model_version": "phase6-2026-05-09",
+  "model_version": "phase7-2026-05-10",
   "encoder_id": "facebook/wav2vec2-base",
   "threshold": 0.5,
   "splits": [
@@ -12,7 +12,7 @@
       "recall": 0.989247311827957,
       "roc_auc": 0.9993820294153999,
       "eer_pct": 1.112347052280311,
-      "eer_threshold": 0.5123008944367288,
+      "eer_threshold": 0.5123008781929179,
       "confusion": [
         [
           86,
@@ -34,7 +34,7 @@
       "recall": 0.9,
       "roc_auc": 0.5588,
       "eer_pct": 46.0,
-      "eer_threshold": 0.9994464178532184,
+      "eer_threshold": 0.9994464174626457,
       "confusion": [
         [
           7,
